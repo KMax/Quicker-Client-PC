@@ -23,55 +23,35 @@ public class QuickerClient implements ActionListener {
 		QuickerProvider provider = QuickerProvider.getInstance();
 		if (event.getActionCommand() == "add") {
 			// Trying to create note
-			try {
-				if (provider.createNote("First Note", "That's my note. ")) {
-					_window.printData("Note created. ");
-				} else {
-					_window.printData("Error occured. ");
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (provider.createNote("First Note", "That's my note. ")) {
+				_window.printData("Note created. ");
+			} else {
+				_window.printData("Error occured. ");
 			}
 		} else if (event.getActionCommand() == "get") {
 			
 			// Trying to get note
-			try {
-				_window.printData(provider.getNote(1));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			_window.printData(provider.getNote(1));
 		} else if (event.getActionCommand() == "update") {
 			
 			// Trying to update note
-			try {
-				if (provider.updateNote(1)) {
-					_window.printData("Note 1 deleted. ");
-				} else {
-					_window.printData("Error occured. ");
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (provider.updateNote(1)) {
+				_window.printData("Note 1 deleted. ");
+			} else {
+				_window.printData("Error occured. ");
 			}
 		} else if (event.getActionCommand() == "delete") {
 			
 			// Trying to delete note
-			try {
-				if (provider.deleteNote(1)) {
-					_window.printData("Note 1 deleted. ");
-				} else {
-					_window.printData("Error occured. ");
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (provider.deleteNote(1)) {
+				_window.printData("Note 1 deleted. ");
+			} else {
+				_window.printData("Error occured. ");
 			}
 		} else if (event.getActionCommand() == "list") {
 			
 			// Trying to delete note
-			try {
-				_window.printData(provider.getNotesList());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			_window.printData(provider.getNotesList());
 		}
 	}
 }

@@ -36,62 +36,73 @@ public class QuickerProvider {
         _authentication = new ChallengeResponse(_scheme, "login", "pass");
     }
 
-    public boolean createNote(String title, String content) throws IOException {
+    public boolean createNote(String title, String content) {
         Request request = new Request(Method.POST, _serverUrl + "/" + _user + "/note/");
         String toSend = "<title>"+title+"</title><content>"+content+"</content>";
         request.setEntity(toSend, MediaType.APPLICATION_XML);
-        Response response = _client.handle(request);
-        if (response.getEntity().getText() != "<error>Error!</error>") {
-            return true;
+        String result = handleResponse(_client.handle(request));
+        
+        if (result == "No content"){
+        	return false;
         }
-        return false;
+        return true;
     }
 
-    public String getNote(int id) throws IOException {
+    public String getNote(int id) {
         Request request = new Request(Method.GET, _serverUrl + "/" + _user + "/note/1/");
         request.setChallengeResponse(_authentication);
-        Response response = _client.handle(request);
+        String result = handleResponse(_client.handle(request));
 
-        if (response.getStatus().isSuccess()) {
-            return response.getEntity().getText();
-        } else if (response.getStatus().equals(Status.CLIENT_ERROR_UNAUTHORIZED)) {
-            System.out.println("Access authorized by the server, " + "check your credentials");
-        } else {
-            System.out.println("An unexpected status was returned: " + response.getStatus());
-        }
-        return "Error";
+        return result;
     }
 
-    public boolean updateNote(int id) throws IOException {
+    public boolean updateNote(int id) {
         Request request = new Request(Method.PUT, _serverUrl + "/" + _user + "/note/1/");
+        request.setChallengeResponse(_authentication);
         request.setEntity("<note>That's my note updated. </note>", MediaType.APPLICATION_XML);
-        Response response = _client.handle(request);
-        if (response.getStatus().isSuccess()) {
-            return true;
-        } else if (response.getStatus().equals(Status.CLIENT_ERROR_UNAUTHORIZED)) {
-            System.out.println("Access authorized by the server, " + "check your credentials");
-        } else {
-            System.out.println("An unexpected status was returned: " + response.getStatus());
+        String result = handleResponse(_client.handle(request));
+        
+        if (result == "No content"){
+        	return false;
         }
-        return false;
+        return true;
     }
 
-    public boolean deleteNote(int id) throws IOException {
+    public boolean deleteNote(int id) {
         Request request = new Request(Method.DELETE, _serverUrl + "/" + _user + "/note/1/");
-        Response response = _client.handle(request);
-        if (response.getStatus().isSuccess()) {
-            return true;
-        } else if (response.getStatus().equals(Status.CLIENT_ERROR_UNAUTHORIZED)) {
-            System.out.println("Access authorized by the server, " + "check your credentials");
+        request.setChallengeResponse(_authentication);
+        String result = handleResponse(_client.handle(request));
+        
+        if (result == "No content"){
+        	return false;
+        }
+        return true;
+    }
+
+    public String getNotesList() {
+        Request request = new Request(Method.GET, _serverUrl + "/" + _user + "/notes/");
+        request.setChallengeResponse(_authentication);
+        String result = handleResponse(_client.handle(request));
+        
+        return result;
+    }
+    
+    private String handleResponse(Response response)
+    {
+    	String result = "No content. ";
+    	if (response.getStatus().equals(Status.CLIENT_ERROR_UNAUTHORIZED)) {
+            System.out.println("Access denied by the server, " + " check your credentials. ");
         } else {
             System.out.println("An unexpected status was returned: " + response.getStatus());
         }
-        return false;
-    }
-
-    public String getNotesList() throws IOException {
-        Request request = new Request(Method.GET, _serverUrl + "/" + _user + "/notes/");
-        Response response = _client.handle(request);
-        return response.getEntity().getText();
+    	if (response.getStatus().isSuccess()) {
+    		try {
+    			result = response.getEntity().getText();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+        }
+    	
+    	return result;
     }
 }
