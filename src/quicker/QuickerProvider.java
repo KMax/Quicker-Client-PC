@@ -12,49 +12,34 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 
+//TODO add exception handling
+
 public class QuickerProvider {
 
-    private String _user;
+    private String _user = "User";
     private Client _client;
-    private String _serverUrl;
+    private String _serverUrl = "localhost:8181/quicker";
     private static QuickerProvider _instance = null;
-    ChallengeScheme scheme = ChallengeScheme.HTTP_BASIC;
-    ChallengeResponse authentication = new ChallengeResponse(scheme,
-            "login", "pass");
+    private ChallengeResponse _authentication;
 
-    public static QuickerProvider getInstance(String user, String url) {
+    public static QuickerProvider getInstance() {
         if (_instance == null) {
-            _instance = new QuickerProvider(user, url);
+            _instance = new QuickerProvider();
         }
         return _instance;
     }
 
-    private QuickerProvider(String user, String url) {
-        _user = user;
-        _serverUrl = url;
+    private QuickerProvider() {
         _client = new Client(Protocol.HTTP);
-    }
-
-    public String test() throws IOException {
-        Request request = new Request(Method.GET, _serverUrl);
-        request.setChallengeResponse(authentication);
-        Response response = _client.handle(request);
-
-        if (response.getStatus().isSuccess()) {
-           return response.getEntity().getText();
-        //	client.get("http://www.restlet.org").getEntity().write(System.out);
-        } else if (response.getStatus().equals(Status.CLIENT_ERROR_UNAUTHORIZED)) {
-            System.out.println("Access authorized by the server, " + "check your credentials");
-        } else {
-            System.out.println("An unexpected status was returned: " + response.getStatus());
-        }
-        return "-1";
-
+        // configuring authentication
+        ChallengeScheme _scheme = ChallengeScheme.HTTP_BASIC;
+        _authentication = new ChallengeResponse(_scheme, "login", "pass");
     }
 
     public boolean createNote(String title, String content) throws IOException {
         Request request = new Request(Method.POST, _serverUrl + "/" + _user + "/note/");
-        request.setEntity(content, MediaType.APPLICATION_XML);
+        String toSend = "<title>"+title+"</title><content>"+content+"</content>";
+        request.setEntity(toSend, MediaType.APPLICATION_XML);
         Response response = _client.handle(request);
         if (response.getEntity().getText() != "<error>Error!</error>") {
             return true;
@@ -64,7 +49,7 @@ public class QuickerProvider {
 
     public String getNote(int id) throws IOException {
         Request request = new Request(Method.GET, _serverUrl + "/" + _user + "/note/1/");
-        request.setChallengeResponse(authentication);
+        request.setChallengeResponse(_authentication);
         Response response = _client.handle(request);
 
         if (response.getStatus().isSuccess()) {
@@ -74,15 +59,19 @@ public class QuickerProvider {
         } else {
             System.out.println("An unexpected status was returned: " + response.getStatus());
         }
-        return "-1";
+        return "Error";
     }
 
     public boolean updateNote(int id) throws IOException {
         Request request = new Request(Method.PUT, _serverUrl + "/" + _user + "/note/1/");
         request.setEntity("<note>That's my note updated. </note>", MediaType.APPLICATION_XML);
         Response response = _client.handle(request);
-        if (response.getEntity().getText() != "<error>Error!</error>") {
+        if (response.getStatus().isSuccess()) {
             return true;
+        } else if (response.getStatus().equals(Status.CLIENT_ERROR_UNAUTHORIZED)) {
+            System.out.println("Access authorized by the server, " + "check your credentials");
+        } else {
+            System.out.println("An unexpected status was returned: " + response.getStatus());
         }
         return false;
     }
@@ -90,14 +79,18 @@ public class QuickerProvider {
     public boolean deleteNote(int id) throws IOException {
         Request request = new Request(Method.DELETE, _serverUrl + "/" + _user + "/note/1/");
         Response response = _client.handle(request);
-        if (response.getEntity().getText() != "<error>Error!</error>") {
+        if (response.getStatus().isSuccess()) {
             return true;
+        } else if (response.getStatus().equals(Status.CLIENT_ERROR_UNAUTHORIZED)) {
+            System.out.println("Access authorized by the server, " + "check your credentials");
+        } else {
+            System.out.println("An unexpected status was returned: " + response.getStatus());
         }
         return false;
     }
 
     public String getNotesList() throws IOException {
-        Request request = new Request(Method.GET, _serverUrl + "/user/notes/");
+        Request request = new Request(Method.GET, _serverUrl + "/" + _user + "/notes/");
         Response response = _client.handle(request);
         return response.getEntity().getText();
     }
