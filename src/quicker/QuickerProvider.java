@@ -15,7 +15,6 @@ import org.restlet.data.Status;
 //TODO add exception handling
 
 public class QuickerProvider {
-
     private String _user = "User";
     private Client _client;
     private String _serverUrl = "localhost:8181/quicker";
@@ -87,6 +86,10 @@ public class QuickerProvider {
         return result;
     }
     
+    /**
+     * @param response
+     * @return
+     */
     private String handleResponse(Response response)
     {
     	String result = "No content. ";

@@ -18,7 +18,6 @@ public class QuickerWindow extends JFrame {
 	
 	public QuickerWindow(QuickerClient controller)
 	{
-		System.out.println("конструктор QuickerWindow отработал. ");
 		_controller = controller;
 		JFrame jfrm = new JFrame("Quicker client. ");
 		jfrm.setLayout(new FlowLayout());
