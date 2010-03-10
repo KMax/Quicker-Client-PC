@@ -14,7 +14,7 @@ public class QuickerWindow extends JFrame {
 	private JButton updateButton;
 	private JButton deleteButton;
 	private JButton getListButton;
-	private JTextArea outputArea;
+	public JTextArea outputArea;
 	
 	public QuickerWindow(QuickerClient controller)
 	{
@@ -35,7 +35,7 @@ public class QuickerWindow extends JFrame {
 		deleteButton = new JButton("Remove note");
 		deleteButton.setActionCommand("remove");
 		getListButton = new JButton("List notes");
-		deleteButton.setActionCommand("list");
+		getListButton.setActionCommand("list");
 
 		jfrm.add(createButton);
 		jfrm.add(getButton);
@@ -59,6 +59,6 @@ public class QuickerWindow extends JFrame {
 	}
 	public void printData(String data)
 	{
-		outputArea.append("\n" + data);
+		outputArea.setText(data);
 	}
 }
