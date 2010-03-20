@@ -19,19 +19,19 @@ public class QuickerClient implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		QuickerProvider provider = QuickerProvider.getInstance();
-		if (event.getActionCommand() == "add") {
+		QuickerNotesProvider provider = QuickerNotesProvider.getInstance();
+		if (event.getActionCommand().equals("add")) {
 			// Trying to create note
-			if (provider.createNote("First Note", "That's my note. ")) {
+			if (provider.createNote(_window.getText())) {
 				_window.printData("Note created. ");
 			} else {
 				_window.printData("Error occured. ");
 			}
-		} else if (event.getActionCommand() == "get") {
+		} else if (event.getActionCommand().equals("get")) {
 			
 			// Trying to get note
 			_window.printData(provider.getNote(1));
-		} else if (event.getActionCommand() == "update") {
+		} else if (event.getActionCommand().equals("update")) {
 			
 			// Trying to update note
 			if (provider.updateNote(1)) {
@@ -39,7 +39,7 @@ public class QuickerClient implements ActionListener {
 			} else {
 				_window.printData("Error occured. ");
 			}
-		} else if (event.getActionCommand() == "delete") {
+		} else if (event.getActionCommand().equals("delete")) {
 			
 			// Trying to delete note
 			if (provider.deleteNote(1)) {
@@ -47,7 +47,7 @@ public class QuickerClient implements ActionListener {
 			} else {
 				_window.printData("Error occured. ");
 			}
-		} else if (event.getActionCommand() == "list") {
+		} else if (event.getActionCommand().equals("list")) {
 			
 			// Trying to delete note
 			_window.printData(provider.getNotesList());
