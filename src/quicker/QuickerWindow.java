@@ -114,8 +114,6 @@ public class QuickerWindow extends JFrame {
 	public void printData(String data)
 	{
 		outputArea.setText(data);
-<<<<<<< HEAD
-=======
 	}
 	public String getText()
 	{
@@ -132,6 +130,5 @@ public class QuickerWindow extends JFrame {
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
->>>>>>> 58a1e0aa37e536c5cf8e48c23c43d708bcfb3784
 	}
 }

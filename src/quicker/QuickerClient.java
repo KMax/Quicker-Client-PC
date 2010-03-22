@@ -21,12 +21,9 @@ public class QuickerClient implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		QuickerNotesProvider provider = QuickerNotesProvider.getInstance();
 		if (event.getActionCommand().equals("add")) {
+			
 			// Trying to create note
-<<<<<<< HEAD
-			if (provider.createNote(_window.outputArea.getText())) {
-=======
 			if (provider.createNote(_window.getText())) {
->>>>>>> 58a1e0aa37e536c5cf8e48c23c43d708bcfb3784
 				_window.printData("Note created. ");
 			} else {
 				_window.printData("Error occured. ");
