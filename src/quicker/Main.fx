@@ -4,7 +4,7 @@
  * Created on 24.03.2010, 12:53:10
  */
 
-package letsgo;
+package Quicker;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -19,17 +19,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.StageStyle;
 import javafx.animation.Timeline;
-import javafx.animation.KeyFrame;
 import javafx.animation.Interpolator;
 import javafx.scene.effect.Glow;
-import javafx.scene.effect.InnerShadow;
+import javafx.animation.transition.TranslateTransition;
 
 /**
  * @author Илья
- */
-
- /*
- посмотреть про transforms: Rotate, Scale, Translate
  */
 
  var hIndent: Integer = 350;
@@ -44,6 +39,45 @@ import javafx.scene.effect.InnerShadow;
  var notesLightning = Glow{ level: 0 };
  var eventsLightning = Glow{ level: 0 };
  var contactsLightning = Glow{ level: 0 };
+
+var notesExpand = Timeline {
+	repeatCount: 1
+	keyFrames : [
+            at (0.3s) { eventsMoveY => hIndent tween Interpolator.LINEAR },
+            at (0.3s) { contactsMoveY => hIndent tween Interpolator.LINEAR }
+	]
+}
+var notesHide = Timeline {
+	repeatCount: 1
+	keyFrames : [
+            at (0.3s) { eventsMoveY => 0 tween Interpolator.LINEAR },
+            at (0.3s) { contactsMoveY => 0 tween Interpolator.LINEAR }
+	]
+}
+var eventsExpand = Timeline {
+	repeatCount: 1
+	keyFrames : [
+            at (0.3s) { contactsMoveY => hIndent tween Interpolator.LINEAR }
+	]
+}
+var eventsHide = Timeline {
+	repeatCount: 1
+	keyFrames : [
+            at (0.3s) { contactsMoveY => 0 tween Interpolator.LINEAR }
+	]
+}
+var contactsExpand = Timeline {
+	repeatCount: 1
+	keyFrames : [
+            at (0.3s) { endMoveY => hIndent tween Interpolator.LINEAR }
+	]
+}
+var contactsHide = Timeline {
+	repeatCount: 1
+	keyFrames : [
+            at (0.3s) { endMoveY => 0 tween Interpolator.LINEAR }
+        ]
+}
 
  var gradient = LinearGradient {
             startX: 0.0
@@ -62,74 +96,11 @@ import javafx.scene.effect.InnerShadow;
             ]
         }
 
-var notesExpand = Timeline {
-	repeatCount: 1
-	keyFrames : [
-		KeyFrame {
-			time : 0.3s
-			canSkip : true
-			values: [eventsMoveY => hIndent tween Interpolator.LINEAR,
-                                contactsMoveY => hIndent tween Interpolator.LINEAR]
-		}
-	]
-}
-var notesHide = Timeline {
-	repeatCount: 1
-	keyFrames : [
-		KeyFrame {
-			time : 0.3s
-			canSkip : true
-			values: [eventsMoveY => 0 tween Interpolator.LINEAR,
-                                contactsMoveY => 0 tween Interpolator.LINEAR]
-		}
-	]
-}
-var eventsExpand = Timeline {
-	repeatCount: 1
-	keyFrames : [
-		KeyFrame {
-			time : 0.3s
-			canSkip : true
-			values: [contactsMoveY => hIndent tween Interpolator.LINEAR]
-		}
-	]
-}
-var eventsHide = Timeline {
-	repeatCount: 1
-	keyFrames : [
-		KeyFrame {
-			time : 0.3s
-			canSkip : true
-			values: [contactsMoveY => 0 tween Interpolator.LINEAR]
-		}
-	]
-}
-var contactsExpand = Timeline {
-	repeatCount: 1
-	keyFrames : [
-		KeyFrame {
-			time : 0.3s
-			canSkip : true
-			values: [endMoveY => hIndent tween Interpolator.LINEAR]
-		}
-	]
-}
-var contactsHide = Timeline {
-	repeatCount: 1
-	keyFrames : [
-		KeyFrame {
-			time : 0.3s
-			canSkip : true
-			values: [endMoveY => 0 tween Interpolator.LINEAR]
-		}
-	]
-}
-
-
 Stage {
     title: "Quicker"
     x: 750
-    y: bind 550 - (contactsMoveY + endMoveY)
+ //   y: bind 550 - (contactsMoveY + endMoveY)
+    y: 100
     width: 204
     height: bind contactsMoveY + endMoveY + 128
     style: StageStyle.UNDECORATED
@@ -180,6 +151,7 @@ Stage {
                                 //    eventsMoveY += hIndent;
                                 //    contactsMoveY += hIndent;
                                     notesExpand.playFromStart();
+                                    tryTransition.play();
                                     notesExpanded = true;
                                 }
                              //   else { eventsMoveY -= hIndent; contactsMoveY -= hIndent; notesExpanded = false; }
