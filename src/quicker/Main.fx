@@ -21,63 +21,140 @@ import javafx.stage.StageStyle;
 import javafx.animation.Timeline;
 import javafx.animation.Interpolator;
 import javafx.scene.effect.Glow;
-import javafx.animation.transition.TranslateTransition;
+import javafx.scene.CustomNode;
+import javafx.scene.Node;
 
 /**
  * @author Илья
  */
 
+ def HEIGHT = 128;
+ def TOP = 450;
+
  var hIndent: Integer = 350;
+ 
+ var wHeight: Integer = HEIGHT;
+ var top: Integer = TOP;
 
- var eventsMoveY: Integer = 0;
- var contactsMoveY: Integer = 0;
- var endMoveY: Integer = 0;
- var notesExpanded: Boolean = false;
- var eventsExpanded: Boolean = false;
- var contactsExpanded: Boolean = false;
+ class QuickerItem extends CustomNode {
+     var text: String;
+     var expanded: Boolean = false;
+     var h: Integer = 40;
+     var other1: QuickerItem;
+     var other2: QuickerItem;
 
- var notesLightning = Glow{ level: 0 };
- var eventsLightning = Glow{ level: 0 };
- var contactsLightning = Glow{ level: 0 };
-
-var notesExpand = Timeline {
-	repeatCount: 1
-	keyFrames : [
-            at (0.3s) { eventsMoveY => hIndent tween Interpolator.LINEAR },
-            at (0.3s) { contactsMoveY => hIndent tween Interpolator.LINEAR }
-	]
-}
-var notesHide = Timeline {
-	repeatCount: 1
-	keyFrames : [
-            at (0.3s) { eventsMoveY => 0 tween Interpolator.LINEAR },
-            at (0.3s) { contactsMoveY => 0 tween Interpolator.LINEAR }
-	]
-}
-var eventsExpand = Timeline {
-	repeatCount: 1
-	keyFrames : [
-            at (0.3s) { contactsMoveY => hIndent tween Interpolator.LINEAR }
-	]
-}
-var eventsHide = Timeline {
-	repeatCount: 1
-	keyFrames : [
-            at (0.3s) { contactsMoveY => 0 tween Interpolator.LINEAR }
-	]
-}
-var contactsExpand = Timeline {
-	repeatCount: 1
-	keyFrames : [
-            at (0.3s) { endMoveY => hIndent tween Interpolator.LINEAR }
-	]
-}
-var contactsHide = Timeline {
-	repeatCount: 1
-	keyFrames : [
-            at (0.3s) { endMoveY => 0 tween Interpolator.LINEAR }
-        ]
-}
+     public function hide1() {
+         Timeline {
+              framerate: 15
+              repeatCount: 1
+                   keyFrames : [
+                        at (0.3s) { h => 40 tween Interpolator.LINEAR }
+                   ]
+              }.playFromStart();
+     }
+     
+     override protected function create () : Node {
+         return Group {     // notes
+                            var lightning = Glow{ level: 0 };
+                            content: [
+                                Rectangle {
+                                    smooth: false
+                                    width: 200
+                                    height: bind h
+                                    fill: Color.LIGHTYELLOW
+                                }
+                                Rectangle {
+                                    smooth: false
+                                    width: 200
+                                    height: 40
+                                    fill: gradient
+                                    stroke: Color.BLACK
+                                    effect: lightning;
+                                    onMouseEntered: function (e: MouseEvent): Void {
+                                        lightning.level = 0.7;
+                                    }
+                                    onMouseExited: function (e: MouseEvent): Void {
+                                        lightning.level = 0.0;
+                                    }
+                                }
+                                Text {
+                                    font : Font {
+                                        size : 16
+                                    }
+                                    content: text
+                                    translateX: 10
+                                    translateY: 25
+                                }
+                            ]
+                            var expand = Timeline {
+                                    framerate: 15
+                                    repeatCount: 1
+                                        keyFrames : [
+                                            at (0.3s) { wHeight => (wHeight+hIndent) tween Interpolator.LINEAR },
+                                            at (0.3s) { top => (top-hIndent) tween Interpolator.LINEAR }
+                                            at (0.3s) { h => h+hIndent tween Interpolator.LINEAR }
+                                        ]
+                                };
+                            var hide = Timeline {
+                                    framerate: 15
+                                    repeatCount: 1
+                                        keyFrames : [
+                                            at (0.3s) { wHeight => HEIGHT tween Interpolator.LINEAR },
+                                            at (0.3s) { top => TOP tween Interpolator.LINEAR }
+                                            at (0.3s) { h => 40 tween Interpolator.LINEAR }
+                                        ]
+                                };
+                            var expandEx = Timeline {
+                                            repeatCount: 1
+                                                keyFrames : [
+                                                        at (0.3s) { h => h+hIndent tween Interpolator.LINEAR }
+                                                ]
+                                        };
+                            onMouseClicked: function (e: MouseEvent): Void {
+                              /*  if (not expanded) {
+                                    if (other1.expanded) {
+                                        other1.hide();
+                                        other1.expanded = false;
+                                        expandEx.playFromStart();
+                                    } else if (other2.expanded) {
+                                        other2.hide();
+                                        other2.expanded = false;
+                                        expandEx.playFromStart();
+                                    } else {
+                                        expand.playFromStart();
+                                    }
+                                    expanded = true;
+                                } else {
+                                    hide.playFromStart();
+                                    expanded = false;
+                                }*/
+                                if (not expanded) {
+                                    if (other1.expanded) {
+                                        other1.h = 40;
+                                        other1.expanded = false;
+                                        h = 40 + hIndent;
+                                    } else if (other2.expanded) {
+                                        other2.h = 40;
+                                        other2.expanded = false;
+                                        h = 40 + hIndent;
+                                    } else {
+                                        h = 40 + hIndent;
+                                        wHeight = wHeight + hIndent;
+                                        top = top - hIndent;
+                                        expanded = true;
+                                    }
+                                    expanded = true;
+                                } else {
+                                    h = 40;
+                                    wHeight = HEIGHT;
+                                    top = TOP;
+                                    expanded = false;
+                                }
+                                onTop(this);
+                            }
+                        };
+     }
+ }
 
  var gradient = LinearGradient {
             startX: 0.0
@@ -96,16 +173,7 @@ var contactsHide = Timeline {
             ]
         }
 
-Stage {
-    title: "Quicker"
-    x: 750
- //   y: bind 550 - (contactsMoveY + endMoveY)
-    y: 100
-    width: 204
-    height: bind contactsMoveY + endMoveY + 128
-    style: StageStyle.UNDECORATED
-    scene: Scene {
-        fill: LinearGradient {
+var background = LinearGradient {
             startX: 0.0
             startY: 0.0
             endX: 1.0
@@ -122,134 +190,45 @@ Stage {
             ]
         }
 
+var notes = QuickerItem {
+    text: "Заметки"
+}
+var events = QuickerItem {
+    text: "События"
+    other1: notes
+}
+var contacts = QuickerItem {
+    text: "Контакты"
+    other1: notes
+    other2: events
+}
+events.other2 = contacts;
+notes.other1 = events;
+notes.other2 = contacts;
+
+var items = [notes, events, contacts];
+
+function onTop(i: QuickerItem) {
+    delete i from items;
+    insert i before items[0];
+}
+
+
+Stage {
+    title: "Quicker"
+    x: 750
+    y: bind top
+    width: 204
+    height: bind wHeight
+    style: StageStyle.UNDECORATED
+    scene: Scene {
+        fill: background
+
         content: [
                 VBox {
-                    content: [
-                        Group {     // notes
-                            content: [
-                                Rectangle {
-                                    width: 200
-                                    height: 40
-                                    fill: gradient
-                                    stroke: Color.BLACK
-                                }
-                                Text {
-                                    font : Font {
-                                        size : 16
-                                    }
-                                    content: "Заметки"
-                                    translateX: 10
-                                    translateY: 25
-                                }
-                            ]
-                            onMouseClicked: function (e: MouseEvent): Void {
-                                if (not notesExpanded) {
-                                //    if (contactsExpanded) { contactsExpanded = false; endMoveY -= hIndent; }
-                                //    if (eventsExpanded) { eventsExpanded = false; contactsMoveY -= hIndent; }
-                                    if (contactsExpanded) { contactsHide.playFromStart(); eventsExpanded = false; }
-                                    if (eventsExpanded) { eventsHide.playFromStart(); eventsExpanded = false; }
-                                //    eventsMoveY += hIndent;
-                                //    contactsMoveY += hIndent;
-                                    notesExpand.playFromStart();
-                                    tryTransition.play();
-                                    notesExpanded = true;
-                                }
-                             //   else { eventsMoveY -= hIndent; contactsMoveY -= hIndent; notesExpanded = false; }
-                                else { notesHide.playFromStart(); notesExpanded = false; }
-                            }
-                            effect: notesLightning;
-                            onMouseEntered: function (e: MouseEvent): Void {
-                                notesLightning.level = 0.7;
-                            }
-                            onMouseExited: function (e: MouseEvent): Void {
-                                notesLightning.level = 0.0;
-                            }
-
-                        },
-                        Group {         // events
-                            content: [
-                                Rectangle {
-                                    width: 200
-                                    height: 40
-                                    fill: gradient
-                                    stroke: Color.BLACK
-                                }
-                                Text {
-                                    font : Font {
-                                        size : 16
-                                    }
-                                    content: "События"
-                                    translateX: 10
-                                    translateY: 25
-                                }
-                            ]
-                            translateY: bind eventsMoveY
-                            onMouseClicked: function (e: MouseEvent): Void {
-                              /*  if (not eventsExpanded) {
-                                    if (contactsExpanded) { contactsExpanded = false; endMoveY -= hIndent; }
-                                    if (notesExpanded) { notesExpanded = false; eventsMoveY -= hIndent; contactsMoveY -= hIndent; }
-                                    contactsMoveY += hIndent;
-                                    eventsExpanded = true;
-                                }
-                                else { contactsMoveY -= hIndent; eventsExpanded = false; }*/
-                                if (not eventsExpanded) {
-                                    if (contactsExpanded) { contactsExpanded = false; contactsHide.playFromStart(); }
-                                    if (notesExpanded) { notesExpanded = false; notesHide.playFromStart(); }
-                                    eventsExpand.playFromStart();
-                                    eventsExpanded = true;
-                                }
-                                else { eventsHide.playFromStart(); eventsExpanded = false; }
-                            }
-                            effect: eventsLightning;
-                            onMouseEntered: function (e: MouseEvent): Void {
-                                eventsLightning.level = 0.7;
-                            }
-                            onMouseExited: function (e: MouseEvent): Void {
-                                eventsLightning.level = 0.0;
-                            }
-                        }
-                        Group {             // contacts
-                            content: [
-                                Rectangle {
-                                    width: 200
-                                    height: 40
-                                    fill: gradient
-                                    stroke: Color.BLACK
-                                }
-                                Text {
-                                    font : Font {
-                                        size : 16
-                                    }
-                                    content: "Контакты"
-                                    translateX: 10
-                                    translateY: 25
-                                }
-                            ]
-                            translateY: bind contactsMoveY
-                            onMouseClicked: function (e: MouseEvent): Void {
-                           /*     if (not contactsExpanded) {
-                                    if (eventsExpanded) { eventsExpanded = false; contactsMoveY -= hIndent; }
-                                    if (notesExpanded) { notesExpanded = false; eventsMoveY -= hIndent; contactsMoveY -= hIndent; }
-                                    endMoveY += hIndent; contactsExpanded = true;
-                                }
-                                else { endMoveY -= hIndent; contactsExpanded = false; }*/
-                                if (not contactsExpanded) {
-                                    if (eventsExpanded) { eventsExpanded = false; eventsHide.playFromStart(); }
-                                    if (notesExpanded) { notesExpanded = false; notesHide.playFromStart(); }
-                                    contactsExpand.playFromStart();
-                                    contactsExpanded = true;
-                                }
-                                else { contactsHide.playFromStart(); contactsExpanded = false; }
-                            }
-                            effect: contactsLightning;
-                            onMouseEntered: function (e: MouseEvent): Void {
-                                contactsLightning.level = 0.7;
-                            }
-                            onMouseExited: function (e: MouseEvent): Void {
-                                contactsLightning.level = 0.0;
-                            }
-                        }
-                   ]
+                    content: 
+                        bind items;
+                   
               }
         ]
     }
