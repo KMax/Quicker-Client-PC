@@ -3,19 +3,15 @@
  *
  * Created on 25.03.2010, 10:57:08
  */
-package notesWindow;
+package quicker.notesWindow;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.text.*;
-import java.io.File;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 import java.lang.System;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.control.Slider;
-import java.awt.Color;
 import javafx.scene.Group;
 
 /**
