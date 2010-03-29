@@ -1,4 +1,4 @@
-package quicker;
+package Quicker;
 
 import java.awt.AWTException;
 import java.awt.FlowLayout;

@@ -1,4 +1,4 @@
-package quicker;
+package Quicker;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package quicker.noteWindow;
+package Quicker.noteWindow;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -15,7 +15,7 @@ var closeButton:Group = Group {
 	var fon = Color.WHITE;
 	content: [
 		Rectangle {
-		    x: bind stage.width-17.0;
+		    x: bind window.width-17.0;
 		    y: 8.0;
 		    width: 10.0;
 		    height: 10.0;
@@ -24,19 +24,19 @@ var closeButton:Group = Group {
 		    arcWidth: 6.0;
 		    },
 		Line {
-		    startX: bind stage.width-15.0;
+		    startX: bind window.width-15.0;
 		    startY: 15.0;
-		    endX: bind stage.width-10.0;
+		    endX: bind window.width-10.0;
 		    endY: 10.0;
 		    },
 		Line {
-		    startX: bind stage.width-15.0;
+		    startX: bind window.width-15.0;
 		    startY: 10.0;
-		    endX: bind stage.width-10.0;
+		    endX: bind window.width-10.0;
 		    endY: 15.0;
 		    }
 		    ];
-
+		    
 	onMouseClicked: function(event:MouseEvent){
 		    System.exit(0);
 		}
@@ -49,13 +49,13 @@ var closeButton:Group = Group {
 	}
 
 
-var stage: Stage = Stage {
+var window: Stage = Stage {
     title: "Заголовок"
     style: StageStyle.UNDECORATED;
     x: 100;
     y: 100;
-    width: 378;
-    height: 451;
+    width: 350;
+    height: 400;
     scene: Scene {
 	fill: Color.WHITE;
         content: closeButton;

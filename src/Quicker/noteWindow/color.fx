@@ -1,4 +1,4 @@
-package quicker.noteWindow;
+package Quicker.noteWindow;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
