@@ -4,7 +4,7 @@
  * Created on 24.03.2010, 12:53:10
  */
 
-package Quicker;
+package quicker;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
