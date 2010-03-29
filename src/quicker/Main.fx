@@ -4,7 +4,7 @@
  * Created on 24.03.2010, 12:53:10
  */
 
-package quicker;
+package Quicker;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -43,21 +43,58 @@ import javafx.scene.text.TextAlignment;
 
  class QuickerMenu extends CustomNode {
     var items: QuickerMenuItem[];
+    
+    /**
+    *  places the item to the top of the menu
+    */
+    function onTop(it: QuickerMenuItem) {
+        delete it from items;
+        insert it before items[0];
+    }
+
     public override function create(): Node {
         return VBox {
-                content: items
-                onMousePressed: function (e: MouseEvent): Void {
-                        if (not(e.source.parent.parent.getClass().equals("Quicker.Main$QuickerMenuItem"))) return;
-                        for (item in items) {
-                            if (e.source.parent.parent.id == "notes") {
-                                   toDisplay = "offline";
-                                   java.lang.System.out.println(toDisplay);
-                                   java.lang.System.out.println(e.source.parent.parent.getClass());
-                            }
-                        }
-                }
+                content: bind items
 
-            };
+                // defines what type of animation to use: to effect window size or not
+                var changeHeight: Boolean = true;
+                onMouseClicked: function (e: MouseEvent): Void {
+
+                        // if click is not at menu item, return
+                        if (not(e.source.parent.parent.getClass().equals(items[0].getClass()))) return;
+                        var temp:QuickerMenuItem = e.source.parent.parent as QuickerMenuItem;
+
+                        // choosing the right way to expand/hide menu items
+                        for (item in items) {
+                            if ( not item.equals(temp) ) {
+                                if (item.expanded) {
+                                    item.colapseEx();
+                                }
+                            } else {
+                                if (not item.expanded) {
+                                    if (changeHeight) {
+                                        item.expand();
+                                        changeHeight = false;
+                                    } else {
+                                        item.expandEx();
+                                        changeHeight = false;
+                                    }
+                                } else {
+                                    item.colapse();
+                                    changeHeight = true;
+                                }
+                            }
+                        } // end for
+                        onTop(temp);
+                        // desiding what content to show
+                        if (e.source.parent.parent.id == "notes") {
+                            toDisplay = "offline";
+                        } else {
+                            toDisplay = "test fdsdasfdfadfffafewawee";
+                        }
+
+                }
+            }
         }
 }
 
@@ -66,10 +103,9 @@ import javafx.scene.text.TextAlignment;
      var text: String;
      var expanded: Boolean = false;
      var h: Integer = 0;
-     var other1: QuickerMenuItem;
-     var other2: QuickerMenuItem;
 
-     public function hideEx() {
+     // colapses an item
+     public function colapseEx() {
          Timeline {
               framerate: 20
               repeatCount: 1
@@ -79,6 +115,8 @@ import javafx.scene.text.TextAlignment;
          }.play();
          expanded = false;
      }
+
+     // expands an item
      public function expandEx() {
          Timeline {
               framerate: 20
@@ -89,6 +127,8 @@ import javafx.scene.text.TextAlignment;
           }.play();
           expanded = true;
      }
+
+     // expands an item, changes window height
      public function expand() {
          Timeline {
              framerate: 20
@@ -101,7 +141,9 @@ import javafx.scene.text.TextAlignment;
          }.play();
          expanded = true;
      }
-     public function hide() {
+
+     // colapses an item, changes window height
+     public function colapse() {
          Timeline {
              framerate: 20
              repeatCount: 1
@@ -117,10 +159,19 @@ import javafx.scene.text.TextAlignment;
          return Group {
                             var lightning = Glow{ level: 0 };
                             content: [
-                                Rectangle {
+                                Rectangle { // expanding field for text
                                     translateY: ITEM_HEIGHT
+                                    translateX: 8
                                     smooth: false
-                                    width: 200
+                                    width: 184
+                                    height: bind h
+                                    fill: Color.YELLOW
+                                }
+                                Rectangle { // expanding field for text
+                                    translateY: ITEM_HEIGHT
+                                    translateX: 10
+                                    smooth: false
+                                    width: 180
                                     height: bind h
                                     fill: Color.LIGHTYELLOW
                                 }
@@ -138,7 +189,7 @@ import javafx.scene.text.TextAlignment;
                                     visible: bind expanded
                                 }
 
-                                Rectangle {
+                                Rectangle { // button
                                     smooth: false
                                     cache: true
                                     width: 200
@@ -153,7 +204,7 @@ import javafx.scene.text.TextAlignment;
                                         lightning.level = 0.0;
                                     }
                                 }
-                                Text {
+                                Text { // button caption
                                     font : Font {
                                         size : 16
                                     }
@@ -163,28 +214,7 @@ import javafx.scene.text.TextAlignment;
                                     cache: true
                                 }
                             ]
-                      /*      onMouseClicked: function (e: MouseEvent): Void {
-                                onTop(this);
-                                if (not expanded) {
-                                    if (other1.expanded) {
-                                        other1.hideEx();
-                                        expandEx();
-                                    } else if (other2.expanded) {
-                                        other2.hideEx();
-                                        expandEx();
-                                    } else {
-                                        expand();
-                                    }
-                                } else {
-                                    hide();
-                                }
-                                if (id == "notes") {
-                                        toDisplay = "offline"//provider.getNotesList();
-                                } else {
-                                        toDisplay = "test fdsdasfdfadfffafewawee";
-                                }
-                            } // end onMouseClicked
-                    */    };
+                     };
      }
  }
 
@@ -234,22 +264,9 @@ var contacts = QuickerMenuItem {
     text: "Контакты"
     id: "contacts"
 }
-events.other1 = notes;
-events.other2 = contacts;
-notes.other1 = events;
-notes.other2 = contacts;
-contacts.other1 = notes;
-contacts.other2 = events;
-
-var items = [notes, events, contacts];
 
 var menu: QuickerMenu = QuickerMenu {
     items: [notes, events, contacts]
-}
-
-function onTop(i: QuickerMenuItem) {
-    delete i from items;
-    insert i before items[0];
 }
 
 Stage {
@@ -258,15 +275,11 @@ Stage {
     y: bind top
     width: 204
     height: bind wHeight
-    style: StageStyle.UNDECORATED
+  //  style: StageStyle.UNDECORATED
+  style: StageStyle.TRANSPARENT
     scene: Scene {
-        fill: Color.YELLOW
-
-        content: [ menu
-          /*      VBox {
-                    content: 
-                        bind items;
-              }*/
-        ]
+     //   fill: Color.YELLOW
+     fill : null
+        content: menu
     }
 }
