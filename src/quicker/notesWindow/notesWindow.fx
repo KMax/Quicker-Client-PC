@@ -3,7 +3,7 @@
  *
  * Created on 25.03.2010, 10:57:08
  */
-package notesWindow;
+package Quicker.notesWindow;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
