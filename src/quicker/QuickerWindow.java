@@ -43,7 +43,7 @@ public class QuickerWindow extends JFrame {
 			e.printStackTrace();
 		}
 		PopupMenu menu = new PopupMenu();
-		MenuItem item = new MenuItem("Выход");
+		MenuItem item = new MenuItem("Р’С‹С…РѕРґ");
 		menu.add(item);
 		icon.setPopupMenu(menu);
 		
