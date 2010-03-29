@@ -29,6 +29,8 @@ import javafx.scene.text.TextAlignment;
  * @author Илья
  */
 
+ var provider: QuickerNotesProvider = QuickerNotesProvider.getInstance();
+
  def HEIGHT = 128;
  def TOP = 100;
  def ITEM_HEIGHT = 40;
@@ -37,12 +39,35 @@ import javafx.scene.text.TextAlignment;
  var wHeight: Integer = HEIGHT;
  var top: Integer = TOP;
 
- class QuickerItem extends CustomNode {
+ var toDisplay = "test fdsdasfdfadfffafewawee";
+
+ class QuickerMenu extends CustomNode {
+    var items: QuickerMenuItem[];
+    public override function create(): Node {
+        return VBox {
+                content: items
+                onMousePressed: function (e: MouseEvent): Void {
+                        if (not(e.source.parent.parent.getClass().equals("Quicker.Main$QuickerMenuItem"))) return;
+                        for (item in items) {
+                            if (e.source.parent.parent.id == "notes") {
+                                   toDisplay = "offline";
+                                   java.lang.System.out.println(toDisplay);
+                                   java.lang.System.out.println(e.source.parent.parent.getClass());
+                            }
+                        }
+                }
+
+            };
+        }
+}
+
+
+ class QuickerMenuItem extends CustomNode {
      var text: String;
      var expanded: Boolean = false;
      var h: Integer = 0;
-     var other1: QuickerItem;
-     var other2: QuickerItem;
+     var other1: QuickerMenuItem;
+     var other2: QuickerMenuItem;
 
      public function hideEx() {
          Timeline {
@@ -52,6 +77,7 @@ import javafx.scene.text.TextAlignment;
                     at (.3s) { h => 0 tween Interpolator.LINEAR }
               ]
          }.play();
+         expanded = false;
      }
      public function expandEx() {
          Timeline {
@@ -61,6 +87,7 @@ import javafx.scene.text.TextAlignment;
                      at (.3s) { h => hIndent tween Interpolator.LINEAR }
               ]
           }.play();
+          expanded = true;
      }
      public function expand() {
          Timeline {
@@ -72,6 +99,7 @@ import javafx.scene.text.TextAlignment;
                      at (.3s) { h => hIndent tween Interpolator.LINEAR }
              ]
          }.play();
+         expanded = true;
      }
      public function hide() {
          Timeline {
@@ -83,7 +111,7 @@ import javafx.scene.text.TextAlignment;
                      at (.3s) { h => 0 tween Interpolator.LINEAR },
              ]
          }.play();
-
+         expanded = false;
      }
      override protected function create () : Node {
          return Group {
@@ -99,7 +127,7 @@ import javafx.scene.text.TextAlignment;
                                 Text {
                                     fill: Color.BLACK
                                     wrappingWidth: 200
-                                    content: "test fdsdasfdfadfffafewawee"
+                                    content: bind toDisplay
                                     font: Font {
                                         size: 14
                                         name: "Comic Sans MC"
@@ -135,52 +163,28 @@ import javafx.scene.text.TextAlignment;
                                     cache: true
                                 }
                             ]
-                            onMouseClicked: function (e: MouseEvent): Void {
+                      /*      onMouseClicked: function (e: MouseEvent): Void {
                                 onTop(this);
                                 if (not expanded) {
                                     if (other1.expanded) {
                                         other1.hideEx();
-                                        other1.expanded = false;
                                         expandEx();
                                     } else if (other2.expanded) {
                                         other2.hideEx();
-                                        other2.expanded = false;
                                         expandEx();
                                     } else {
                                         expand();
-                                        java.lang.System.out.println("not expanded");
                                     }
-                                    expanded = true;
                                 } else {
                                     hide();
-                                    expanded = false;
                                 }
-                                /*
-                                if (not expanded) {
-                                    if (other1.expanded) {
-                                        other1.h = ITEM_HEIGHT;
-                                        other1.expanded = false;
-                                        h = ITEM_HEIGHT + hIndent;
-                                    } else if (other2.expanded) {
-                                        other2.h = ITEM_HEIGHT;
-                                        other2.expanded = false;
-                                        h = ITEM_HEIGHT + hIndent;
-                                    } else {
-                                        h = ITEM_HEIGHT + hIndent;
-                                        wHeight = wHeight + hIndent;
-                                        top = top - hIndent;
-                                        expanded = true;
-                                    }
-                                    expanded = true;
+                                if (id == "notes") {
+                                        toDisplay = "offline"//provider.getNotesList();
                                 } else {
-                                    h = ITEM_HEIGHT;
-                                    wHeight = HEIGHT;
-                                    top = TOP;
-                                    expanded = false;
+                                        toDisplay = "test fdsdasfdfadfffafewawee";
                                 }
-                                onTop(this);*/
                             } // end onMouseClicked
-                        };
+                    */    };
      }
  }
 
@@ -218,15 +222,15 @@ var background = LinearGradient {
             ]
         }
 
-var notes = QuickerItem {
+var notes = QuickerMenuItem {
     text: "Заметки"
     id: "notes"
 }
-var events = QuickerItem {
+var events = QuickerMenuItem {
     text: "События"
     id: "events"
 }
-var contacts = QuickerItem {
+var contacts = QuickerMenuItem {
     text: "Контакты"
     id: "contacts"
 }
@@ -239,7 +243,11 @@ contacts.other2 = events;
 
 var items = [notes, events, contacts];
 
-function onTop(i: QuickerItem) {
+var menu: QuickerMenu = QuickerMenu {
+    items: [notes, events, contacts]
+}
+
+function onTop(i: QuickerMenuItem) {
     delete i from items;
     insert i before items[0];
 }
@@ -254,12 +262,11 @@ Stage {
     scene: Scene {
         fill: Color.YELLOW
 
-        content: [
-                VBox {
+        content: [ menu
+          /*      VBox {
                     content: 
                         bind items;
-                   
-              }
+              }*/
         ]
     }
 }
