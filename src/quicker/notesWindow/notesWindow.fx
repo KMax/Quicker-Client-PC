@@ -8,25 +8,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 import java.lang.System;
+import javafx.scene.input.MouseEvent;
 
-/**
- * @author kirduk
- */
 //var awtFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, new File("C://RAGE.TTF"));
-var image = Image { url: "{__DIR__}background1.jpg" };
+def image = Image { url: "{__DIR__}background1.jpg" };
 def ibe1 = Image { url: "{__DIR__}ibe1.png" };
 def cb1 = Image { url: "{__DIR__}cb1.png" };
 def mb1 = Image { url: "{__DIR__}mb1.png" };
 def db1 = Image { url: "{__DIR__}db1.png" };
-var X: Float;
-var Y: Float;
-X = 100;
-Y = 100;
 
 //awtFont = awtFont.deriveFont(22.0);
 
 //def fxFont = com.sun.javafx.tk.Toolkit.getToolkit().getFontLoader().font(awtFont);
-var v = ImageView { image: bind image };
+def v = ImageView { image: image };
 def editButton = ImageView {
             x: 343
             y: 416
@@ -43,7 +37,7 @@ def closeButton = ImageView {
                 System.exit(0);
             }
         }
-def minimazeButton = ImageView {
+def minimazeButton: ImageView = ImageView {
             x: 327
             y: 5
             image: mb1;
@@ -51,20 +45,20 @@ def minimazeButton = ImageView {
                 //Сворачивание
             }
         }
-def drag = ImageView {
+def drag: ImageView = ImageView {
             x: 0, y: 0
             image: db1;
-            onMouseDragged: function (event) {
-                X = X + event.dragX;
-                Y = Y + event.dragY;
+            onMouseDragged: function (event: MouseEvent) {
+                stage.x += event.dragX;
+                stage.y += event.dragY;
                 }
         }
 
-Stage {
+var stage: Stage = Stage {
     title: "Имя _заметки"
     style: StageStyle.UNDECORATED
-    x: bind X;
-    y: bind Y;
+    x: 100;
+    y: 100;
     width: 378;
     height: 451;
     scene: Scene {             
