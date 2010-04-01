@@ -4,6 +4,10 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import Quicker.noteWindow.TextArea;
 import javafx.scene.paint.Color;
+import javafx.stage.StageStyle;
+import javafx.stage.Screen;
+
+def screen:Screen = Screen.primary;
 
 def window: Stage = Stage {
     title: "Заголовок";
@@ -12,14 +16,19 @@ def window: Stage = Stage {
     width: 350;
     height: 400;
     scene: Scene {
-	content: TextArea {
-		    fill: Color.YELLOW;
-		    text: "Заметка.....тра лала трал ала";
-		    x: 10.0;
-		    y: 50.0;
+	fill: Color.YELLOW;
+	content: [
+		TextArea {
+		    text: "Тесцылраидфри"
+		    width: bind window.width;
+		    height: bind window.height;
 		}
+		];
     }
 }
+
+window.x = (Screen.primary.bounds.width - window.width)/2;
+window.y = (Screen.primary.bounds.height - window.height)/2;
 
 
 
