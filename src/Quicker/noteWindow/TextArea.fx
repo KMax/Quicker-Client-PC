@@ -46,7 +46,9 @@ public class TextArea extends SwingComponent{
         };
 
         editorPane.addKeyListener( keyListener );
-        var scrollPane = new JScrollPane(editorPane);
+        var scrollPane = new JScrollPane(editorPane,
+	JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+	JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         return scrollPane;
         //return editorPane;
 
