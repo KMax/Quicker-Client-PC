@@ -1,11 +1,6 @@
 package Quicker;
 
 import javafx.scene.control.ScrollBar;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.stage.StageStyle;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.scene.CustomNode;
