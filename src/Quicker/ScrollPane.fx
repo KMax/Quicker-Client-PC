@@ -10,21 +10,25 @@ import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.scene.CustomNode;
 import javafx.scene.layout.ClipView;
-import javafx.scene.layout.HBox;
 import javafx.scene.Group;
 
-class ScrollPane extends CustomNode {
+public class ScrollPane extends CustomNode {
+
+    public var content: Node[];
+    public var width: Float;
+    public var height: Float;
 
     override protected function create(): Node {
-	var scroll = ScrollBar {
+	var scroll: ScrollBar = ScrollBar {
+		    translateX: bind (this.width - scroll.width);
 		    height: this.height;
 		    min: 0, max: 1;
 		    vertical: true;
 		}
 	var content = VBox {
-			spacing: 5;
-			content: this.content;
-		    };
+		    spacing: 5;
+		    content: this.content;
+		};
 	var clip = ClipView {
 		    width: this.width;
 		    height: this.height;
@@ -33,39 +37,9 @@ class ScrollPane extends CustomNode {
 		};
 	return Group {
 		    content: [
-			clip,scroll
+			clip, scroll
 		    ]
-		};  
-}
-
-
-
-
-                            public var content: Node[];
-    public var width: Float;
-    public var height: Float;
-}
-var texts: Text[];
-
-for (i in [0..25]) {
-    insert Text {
-	content: "Заголовок заметки";
-    } into texts;
+		};
+    }
 
 }
-var window = Stage {
-	    title: "Simple ScrollBar Use"
-	    width: 240
-	    height: 320
-	    style: StageStyle.UNDECORATED
-	    scene: Scene {
-		fill: Color.GREEN;
-		content: [
-		    ScrollPane {
-			content: texts;
-			width: 240;
-			height: 100;
-		    }
-		]
-	    }
-	}
