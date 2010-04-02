@@ -45,17 +45,6 @@ class ScrollPane extends CustomNode {
     public var width: Float;
     public var height: Float;
 }
-var scroll = ScrollBar {
-	    translateX: bind 240 - 10
-	    translateY: 44
-	    height: 320 - 65
-	    scaleX: 0.5
-	    blockIncrement: 16
-	    clickToPosition: false
-	    min: 0
-	    max: 5
-	    vertical: true
-	};
 var texts: Text[];
 
 for (i in [0..25]) {
