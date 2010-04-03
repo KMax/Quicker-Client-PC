@@ -8,6 +8,8 @@ import javafx.scene.control.Button;
 import javafx.ext.swing.SwingTextField;
 import javafx.scene.Group;
 
+public var noteText: String;
+
 var textf = SwingTextField {
             columns: 10
             text: "TextField"
@@ -21,7 +23,7 @@ def bClose = Button {
                 window.close();
             }
         }
-var window: Stage = Stage {
+public var window: Stage = Stage {
             title: "Заголовок";
             x: 100
             y: 100
@@ -35,6 +37,7 @@ var window: Stage = Stage {
                                 width: bind window.width - 6;
                                // height: bind window.height / 2-15;
                                height: bind window.height-100;
+                               text: noteText;
                             }
 
                             Button {

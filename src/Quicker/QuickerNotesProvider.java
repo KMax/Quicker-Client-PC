@@ -42,7 +42,7 @@ public class QuickerNotesProvider {
     	
         Request request = new Request(Method.POST, _serverUrl + "/" + _user + "/note/");
         String toSend = title;
-        request.setEntity(toSend, MediaType.valueOf("application/atom+xml;charset=ISO-8859-1"));
+        request.setEntity(toSend, MediaType.valueOf("application/atom+xml"));
 		request.setChallengeResponse(_authentication);
         String result = handleResponse(_client.handle(request));
         
@@ -66,7 +66,7 @@ public class QuickerNotesProvider {
         request.setEntity("<note>That's my note updated. </note>", MediaType.APPLICATION_XML);
         String result = handleResponse(_client.handle(request));
         
-        if (result == "No content"){
+        if (result.equals("No content")){
         	return false;
         }
         return true;

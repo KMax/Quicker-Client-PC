@@ -10,8 +10,8 @@ import javafx.scene.Group;
 public class ScrollPane extends CustomNode {
 
     public var content: Node[];
-    public var width: Float;
-    public var height: Float;
+    public var width: Float = Constants.VIEWER_WIDTH;
+    public var height: Float = Constants.hIndent - 20;
 
     override protected function create(): Node {
 	var scroll: ScrollBar = ScrollBar {
