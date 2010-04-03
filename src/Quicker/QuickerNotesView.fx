@@ -28,12 +28,14 @@ public class QuickerNotesView extends CustomNode {
                           //    cache: true
                           content: [
                              Rectangle {
+                                 cache: true
                                  height: Constants.ITEM_HEIGHT
                                  width: Constants.VIEWER_WIDTH
                                  smooth: false
                                  fill: Constants.GRADIENT
+                                 id: i.getNoteID()
                                  onMouseClicked: function (e: MouseEvent): Void {
-                                    NoteWindow.noteText = "sdf";
+                                    NoteWindow.noteText = provider.getNote(e.node.id);
                                     var w = NoteWindow.window;
                                  }
 

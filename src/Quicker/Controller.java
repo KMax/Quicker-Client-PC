@@ -61,6 +61,57 @@ public class Controller {
                 + "<extractions>Первая строка</extractions>"
                 + "<date>9500000000</date>"
                 + "</note>"
+
+                + "<note>"
+                + "<id>3</id>"
+                + "<title>Третий</title>"
+                + "<extractions>Бла бла бла</extractions>"
+                + "<date>9500000000</date>"
+                + "</note>"
+                + "<note>"
+                + "<id>4</id>"
+                + "<title>Четвёртый</title>"
+                + "<extractions>Первая строка</extractions>"
+                + "<date>9500000000</date>"
+                + "</note>"/*
+                + "<note>"
+                
+                + "<id>1</id>"
+                + "<title>Заголовок</title>"
+                + "<extractions>Бла бла бла</extractions>"
+                + "<date>9500000000</date>"
+                + "</note>"
+                + "<note>"
+                + "<id>2</id>"
+                + "<title>Второй</title>"
+                + "<extractions>Первая строка</extractions>"
+                + "<date>9500000000</date>"
+                + "</note>"
+
+                + "<note>"
+                + "<id>1</id>"
+                + "<title>Заголовок</title>"
+                + "<extractions>Бла бла бла</extractions>"
+                + "<date>9500000000</date>"
+                + "</note>"
+                + "<note>"
+                + "<id>2</id>"
+                + "<title>Второй</title>"
+                + "<extractions>Первая строка</extractions>"
+                + "<date>9500000000</date>"
+                + "</note>"
+                + "<note>"
+                + "<id>1</id>"
+                + "<title>Заголовок</title>"
+                + "<extractions>Бла бла бла</extractions>"
+                + "<date>9500000000</date>"
+                + "</note>"
+                + "<note>"
+                + "<id>2</id>"
+                + "<title>Второй</title>"
+                + "<extractions>Первая строка</extractions>"
+                + "<date>9500000000</date>"
+                + "</note>" */
                 + "</notes>";
         try {
             DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
@@ -107,10 +158,10 @@ public class Controller {
     }
 
     public String getNote(String id) {
-        note = "<note id=\"" + id + "\"><title>Первая заметка</title><content>"
-                + "<text>Контент заметки. Много много много много "
+        note = "<note id=\"" + id + "\"><title>Заголовок</title><content>"
+                + "<text>Бла бла бла. Контент заметки. Много много много много "
                 + "много много много теста</text></content><date>"
-                + "23.06.1990</date></note>";
+                + "9500000000</date></note>";
         return note;
     }
 

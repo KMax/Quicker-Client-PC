@@ -13,12 +13,6 @@ public class ScrollPane extends CustomNode {
     public var height: Float;
 
     override protected function create(): Node {
-	var scroll: ScrollBar = ScrollBar {
-		    translateX: bind (this.width - scroll.width);
-		    height: this.height;
-		    min: 0, max: 1;
-		    vertical: true;
-		}
 	var clip:ClipView = ClipView {
 		    pannable: false;
 		    width: this.width;
@@ -26,7 +20,13 @@ public class ScrollPane extends CustomNode {
 		    clipX: 0.0, clipY: bind (scroll.value * clip.maxClipY);
 		    node: this.content;
 		};
-	scroll.visible = (this.height < clip.maxClipY);
+	var scroll: ScrollBar = ScrollBar {
+		    translateX: bind (this.width - scroll.width);
+		    height: this.height;
+		    min: 0, max: 1;
+		    vertical: true;
+                    visible: (this.height < clip.maxClipY);
+		}
 	return Group {
 		    content: [
 			clip, scroll

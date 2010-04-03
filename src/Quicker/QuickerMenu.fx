@@ -56,7 +56,7 @@ import javafx.scene.layout.VBox;
                                 }
                             }
                         } // end for
-                        onTop(chosen);
+                    //    onTop(chosen);
                 }
             };
         }
