@@ -1,8 +1,7 @@
-package javafxapplication2;
+package Quicker.noteWindow;
 
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafxapplication2.TextArea;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.scene.control.Button;
