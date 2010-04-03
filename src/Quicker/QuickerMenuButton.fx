@@ -22,11 +22,13 @@ import javafx.scene.text.Text;
  public class QuickerMenuButton extends CustomNode {
      public var text: String;
      public var viewer: Node;
- /*    var scroll = ScrollPane {
-                                    content: viewer;
-                                }*/
-     public var expanded: Boolean = false on replace { viewer.visible = expanded; };
- //    public var expanded: Boolean = false on replace { scroll.visible = expanded; };
+     var scroll = ScrollPane {
+				content: viewer;
+				width: Constants.VIEWER_WIDTH;
+				height: Constants.hIndent - 20;
+                                }
+  //   public var expanded: Boolean = false on replace { viewer.visible = expanded; };
+     public var expanded: Boolean = false on replace { scroll.visible = expanded; };
      var h: Integer = 0;
 
      // colapses an item
@@ -81,10 +83,10 @@ import javafx.scene.text.Text;
          expanded = false;
      }
      override protected function create () : Node {
-         viewer.translateX = 10 + (Constants.AREA_WIDTH - Constants.VIEWER_WIDTH) / 2;
-         viewer.translateY = Constants.MENU_BUTTON_HEIGHT + 10;
-     //    scroll.translateX = 10 + (Constants.AREA_WIDTH - Constants.VIEWER_WIDTH) / 2;
-     //    scroll.translateY = Constants.MENU_BUTTON_HEIGHT + 10;
+      //    viewer.translateX = 10 + (Constants.AREA_WIDTH - Constants.VIEWER_WIDTH) / 2;
+      //   viewer.translateY = Constants.MENU_BUTTON_HEIGHT + 10;
+        scroll.translateX = 10 + (Constants.AREA_WIDTH - Constants.VIEWER_WIDTH) / 2;
+         scroll.translateY = Constants.MENU_BUTTON_HEIGHT + 10;
          return Group {
                             var lightning = Glow{ level: 0 };
                             content: [
@@ -104,9 +106,9 @@ import javafx.scene.text.Text;
                                     height: bind h
                                     fill: Color.LIGHTYELLOW
                                 }
-                              //  scroll,
+                                scroll,
 
-                                viewer,
+                             //   viewer,
 
                                 Rectangle { // button
                                     smooth: false
