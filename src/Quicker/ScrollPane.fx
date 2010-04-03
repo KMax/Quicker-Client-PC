@@ -1,7 +1,6 @@
 package Quicker;
 
 import javafx.scene.control.ScrollBar;
-import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.scene.CustomNode;
 import javafx.scene.layout.ClipView;
@@ -9,7 +8,7 @@ import javafx.scene.Group;
 
 public class ScrollPane extends CustomNode {
 
-    public var content: Node[];
+    public var content: Node;
     public var width: Float;
     public var height: Float;
 
@@ -20,16 +19,12 @@ public class ScrollPane extends CustomNode {
 		    min: 0, max: 1;
 		    vertical: true;
 		}
-	var content = VBox {
-		    spacing: 5;
-		    content: this.content;
-		};
 	var clip:ClipView = ClipView {
 		    pannable: false;
 		    width: this.width;
 		    height: this.height;
 		    clipX: 0.0, clipY: bind (scroll.value * clip.maxClipY);
-		    node: content;
+		    node: this.content;
 		};
 	scroll.visible = (this.height < clip.maxClipY);
 	return Group {

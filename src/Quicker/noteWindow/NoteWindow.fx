@@ -37,7 +37,7 @@ public var window: Stage = Stage {
                                 width: bind window.width - 6;
                                // height: bind window.height / 2-15;
                                height: bind window.height-100;
-                               text: noteText;
+                               text: bind noteText;
                             }
 
                             Button {
