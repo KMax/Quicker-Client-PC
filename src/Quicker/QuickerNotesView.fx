@@ -34,7 +34,7 @@ public class QuickerNotesView extends CustomNode {
 					    // NoteWindow.noteText = "sdf";
 					    // var w = NoteWindow.window;
 					    var nt: NoteWindow = new NoteWindow();
-					    nt.create("fdfgdf");
+					    nt.create("TitleName","fdfgdf");
 
 					}
 				    }
