@@ -114,18 +114,11 @@ public class Controller {
                 + "</note>" */
                 + "</notes>";
         try {
-            DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-            f.setNamespaceAware(true);
-            DocumentBuilder builder = f.newDocumentBuilder();
-            InputSource is = new InputSource();
-            is.setCharacterStream(new StringReader(note));
-            Document document = builder.parse(is);
-            XPath xpath = XPathFactory.newInstance().newXPath();
-            double num = (Double)xpath.evaluate("count(//note)",
-                                    document, XPathConstants.NUMBER);
-            XPathExpression expr;
-            expr = xpath.compile("/notes//note");
-            Object result = expr.evaluate(document, XPathConstants.NODESET);
+            XMLParser parser = new XMLParser(note);
+            double num = (Double)parser.execute("count(//note)",
+                    XPathConstants.NUMBER);
+            Object result = parser.execute("/notes//note",
+                    XPathConstants.NODESET);
             NodeList nodes;
             nodes = (NodeList)result;
 

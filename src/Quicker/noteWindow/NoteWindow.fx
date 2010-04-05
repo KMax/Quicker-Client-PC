@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+import javafx.stage.StageStyle;
 
 public class NoteWindow {
     def gradient = LinearGradient {
@@ -38,6 +39,7 @@ public class NoteWindow {
                 }
         var window: Stage = Stage {
                     title: "Quicker - {title}";
+                    style: StageStyle.UNDECORATED
                     x: 100
                     y: 100
                     width: 400;
