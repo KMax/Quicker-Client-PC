@@ -31,11 +31,11 @@ public class QuickerNotesView extends CustomNode {
 					smooth: false
 					fill: Constants.GRADIENT
 					onMouseClicked: function (e: MouseEvent): Void {
-					    // NoteWindow.noteText = "sdf";
-					    // var w = NoteWindow.window;
-					    var nt: NoteWindow = new NoteWindow();
-					    nt.create(i.getTitle(),i.getExtractions());
-
+					    var nt: NoteWindow = NoteWindow {
+                                                title: i.getTitle();
+                                                noteText: provider.getNote(e.node.id);
+                                            }
+                                            nt.create();
 					}
 				    }
 				    VBox {

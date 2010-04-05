@@ -14,6 +14,8 @@ import javafx.scene.paint.Stop;
 import javafx.stage.StageStyle;
 
 public class NoteWindow {
+    public var title: String;
+    public var noteText: String;
     def gradient = LinearGradient {
                 startX: 0.0
                 startY: 0.0
@@ -30,7 +32,7 @@ public class NoteWindow {
                     },
                 ]
             }
-    public function create(title: String, noteText: String): Stage {
+    public function create(): Stage {
         var viewer: Node;
         var scroll = ScrollPane {
                     content: viewer;
