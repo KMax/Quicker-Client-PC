@@ -25,6 +25,7 @@ public class QuickerMenuButton extends CustomNode {
 		content: viewer;
 		width: Constants.VIEWER_WIDTH;
 		height: Constants.hIndent - 20;
+		vertical: true;
 		visible: bind expanded;
 	    }
 
