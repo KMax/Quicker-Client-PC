@@ -5,22 +5,15 @@
 package Quicker;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import Quicker.exceptions.ControllerException;
 
 /**
  *
@@ -31,7 +24,7 @@ public class Controller {
     private static Controller instance = null;
     private QuickerNotesProvider provider;
     private LinkedList<NoteListItem> noteList;
-    private String note;
+    private Note note;
 
     public static Controller getInstance() {
         if (instance == null) {
@@ -45,76 +38,78 @@ public class Controller {
         noteList = new LinkedList<NoteListItem>();
     }
 
-    public LinkedList<NoteListItem> getNoteList() {
-        //   provider.getNotesList();
+    public LinkedList<NoteListItem> getNoteList()
+            throws ControllerException {
+        String notes;
+        //   notes = provider.getNotesList();
 
-        String note = "<notes>"
-                + "<note>"
+        notes = "<notes count=\"4\">"
+                + "<note video=\"1\">"
                 + "<id>1</id>"
                 + "<title>Заголовок</title>"
                 + "<extractions>Бла бла бла</extractions>"
-                + "<date>9500000000</date>"
+                + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
-                + "<note>"
+                + "<note image=\"1\">"
                 + "<id>2</id>"
                 + "<title>Второй</title>"
                 + "<extractions>Первая строка</extractions>"
-                + "<date>9500000000</date>"
+                + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
 
-                + "<note>"
+                + "<note video=\"1\" image=\"1\">"
                 + "<id>3</id>"
                 + "<title>Третий</title>"
                 + "<extractions>Бла бла бла</extractions>"
-                + "<date>9500000000</date>"
+                + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
-                + "<note>"
+                + "<note video=\"1\" image=\"\">"
                 + "<id>4</id>"
                 + "<title>Четвёртый</title>"
                 + "<extractions>Первая строка</extractions>"
-                + "<date>9500000000</date>"
-                + "</note>"/*
-                + "<note>"
+                + "<date>31 фев 2010 23:57:34</date>"
+                + "</note>"
                 
+                + "<note>"
                 + "<id>1</id>"
                 + "<title>Заголовок</title>"
                 + "<extractions>Бла бла бла</extractions>"
-                + "<date>9500000000</date>"
+                + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
                 + "<note>"
                 + "<id>2</id>"
                 + "<title>Второй</title>"
                 + "<extractions>Первая строка</extractions>"
-                + "<date>9500000000</date>"
+                + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
 
                 + "<note>"
                 + "<id>1</id>"
                 + "<title>Заголовок</title>"
                 + "<extractions>Бла бла бла</extractions>"
-                + "<date>9500000000</date>"
+                + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
                 + "<note>"
                 + "<id>2</id>"
                 + "<title>Второй</title>"
                 + "<extractions>Первая строка</extractions>"
-                + "<date>9500000000</date>"
+                + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
                 + "<note>"
                 + "<id>1</id>"
                 + "<title>Заголовок</title>"
                 + "<extractions>Бла бла бла</extractions>"
-                + "<date>9500000000</date>"
+                + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
                 + "<note>"
                 + "<id>2</id>"
                 + "<title>Второй</title>"
                 + "<extractions>Первая строка</extractions>"
-                + "<date>9500000000</date>"
-                + "</note>" */
+                + "<date>31 фев 2010 23:57:34</date>"
+                + "</note>"/* */
                 + "</notes>";
         try {
-            XMLParser parser = new XMLParser(note);
+            XMLParser parser = new XMLParser(notes);
             double num = (Double)parser.execute("count(//note)",
                     XPathConstants.NUMBER);
             Object result = parser.execute("/notes//note",
@@ -127,34 +122,69 @@ public class Controller {
             for (int i = 0; i < num; i++) {
                 media = new LinkedList<Media>();
                 media.add(Media.Text);
+          /*      if (nodes.item(i).getAttributes().getNamedItem("video").getTextContent().equals("")) {
+                    media.add(Media.Video);
+                }
+                if (nodes.item(i).getAttributes().getNamedItem("image").getTextContent().equals("")) {
+                    media.add(Media.Graphics);
+                }*/
                 item = new NoteListItem(
-                        nodes.item(i).getChildNodes().item(0).getTextContent(),
+                        Integer.parseInt(nodes.item(i).getChildNodes().item(0).getTextContent()),
                         nodes.item(i).getChildNodes().item(1).getTextContent(),
                         nodes.item(i).getChildNodes().item(2).getTextContent(),
-                        Long.parseLong(nodes.item(i).getChildNodes().item(3).getTextContent()),
+                        nodes.item(i).getChildNodes().item(3).getTextContent(),
                         media
                         );
                 noteList.add(item);
             }
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            // throw ControllerException(Trowable e)
+            throw new ControllerException(ex);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ControllerException(ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ControllerException(ex);
         } catch (IOException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ControllerException(ex);
         }
         
         return noteList;
     }
 
-    public String getNote(String id) {
-        note = "<note id=\"" + id + "\"><title>Заголовок</title><content>"
+    public Note getNote(int id) throws ControllerException {
+        String sNote;
+        //note = provider.getNote(id);
+        sNote = "<note id=\"" + id + "\"><title>Заголовок</title><content>"
                 + "<text>Бла бла бла. Контент заметки. Много много много много "
-                + "много много много теста</text></content><date>"
-                + "9500000000</date></note>";
+                + "много много много теста. </text>" +
+                "<image>photo1.jpg</image>" +
+                "<video>video1.mpeg</video></content><date>"
+                + "31 фев 2010 23:57:34</date></note>";
+        try {
+            XMLParser parser = new XMLParser(sNote);
+            String text = (String)parser.execute("/note/content/text", XPathConstants.STRING);
+            String title = (String)parser.execute("/note/title", XPathConstants.STRING);
+            String video = (String)parser.execute("/note/content/audio", XPathConstants.STRING);
+            LinkedList<String> videos = new LinkedList<String>();
+            videos.add(video);
+            String audio = (String)parser.execute("/note/content/video", XPathConstants.STRING);
+            LinkedList<String> audios = new LinkedList<String>();
+            audios.add(audio);
+            String image = (String)parser.execute("/note/content/image", XPathConstants.STRING);
+            LinkedList<String> images = new LinkedList<String>();
+            videos.add(image);
+            String date = (String)parser.execute("/note/date", XPathConstants.STRING);
+            
+            note = new Note(id, title, text, videos, audios, audios, date);
+        } catch (ParserConfigurationException ex) {
+            throw new ControllerException(ex);
+        } catch (SAXException ex) {
+            throw new ControllerException(ex);
+        } catch (IOException ex) {
+            throw new ControllerException(ex);
+        } catch (XPathExpressionException ex) {
+            throw new ControllerException(ex);
+        }
         return note;
     }
 

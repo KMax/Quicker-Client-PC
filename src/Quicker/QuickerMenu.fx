@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 */
  public class QuickerMenu extends CustomNode {
     public var items: QuickerMenuButton[];
+    public var spacing: Number;
 
     /**
     *  places the item to the menu top
@@ -22,6 +23,7 @@ import javafx.scene.layout.VBox;
 
     public override function create(): Node {
         return VBox {
+                spacing: spacing
                 content: bind items
 
                 // defines what type of animation to use: to effect window size or not

@@ -12,6 +12,7 @@ import javafx.scene.text.TextAlignment;
 import Quicker.Constants;
 import javafx.scene.input.MouseEvent;
 import Quicker.noteWindow.NoteWindow;
+import javafx.scene.layout.HBox;
 
 public class QuickerNotesView extends CustomNode {
 
@@ -21,11 +22,12 @@ public class QuickerNotesView extends CustomNode {
 		    spacing: 2
 		    width: 50
 		    content: [
-			for (i: NoteListItem in provider.getNoteList()) {
+			for (i: NoteListItem in provider.getNoteList()) { // handle exception
 			    Group {
 				//    cache: true
 				content: [
 				    Rectangle {
+                                        id: "{i.getNoteID()}"
 					height: Constants.ITEM_HEIGHT
 					width: Constants.VIEWER_WIDTH
 					smooth: false
@@ -33,14 +35,15 @@ public class QuickerNotesView extends CustomNode {
 					onMouseClicked: function (e: MouseEvent): Void {
 					    var nt: NoteWindow = NoteWindow {
                                                 title: i.getTitle();
-                                                noteText: provider.getNote(e.node.id);
-                                            }
+                                                noteText: provider.getNote(Integer.parseInt(e.node.id)).getText();
+                                            };
                                             nt.create();
 					}
 				    }
+                                    HBox { spacing: 0 translateY: 3 translateX: 5 content: [
 				    VBox {
-					translateY: 3
-					translateX: 5
+					//translateY: 3
+					//translateX: 5
 					spacing: 0
 					content: [
 					    Text {
@@ -59,12 +62,20 @@ public class QuickerNotesView extends CustomNode {
 					    }
 					    Text {
 						font: Font { size: 10 }
-						content: bind i.getDate().toString();
+						content: bind i.getDate();
 						fill: Color.GREEN
 						wrappingWidth: Constants.VIEWER_WIDTH - 10
 					    }
 					]
 				    } // end VBox
+                                    /*
+                                    VBox { spacing: 0 content: [
+                                            Rectangle { width: 16 height: 16
+                                                fill: if (i.getMediaType().contains(Media.Video)) Color.RED;
+                                            }
+                                            ]
+                                    }*/
+                                    ]}
 				] // end group content
 			    } // end droup
 			} // end for

@@ -107,7 +107,7 @@ public class QuickerMenuButton extends CustomNode {
 			Rectangle { // button
 			    smooth: false
 			    cache: true
-			    width: 200
+			    width: Constants.BUTTON_WIDTH
 			    height: Constants.MENU_BUTTON_HEIGHT
 			    fill: Constants.BUTTON_COLOR
 			    stroke: Color.BLACK
@@ -125,7 +125,7 @@ public class QuickerMenuButton extends CustomNode {
 			    }
 			    content: text
 			    translateX: 10
-			    translateY: 25
+			    translateY: Constants.MENU_BUTTON_HEIGHT / 2 + 5
 			    cache: true
 			}
 		    ]

@@ -32,6 +32,7 @@ var contacts = QuickerMenuButton {
 
 var menu: QuickerMenu = QuickerMenu {
     items: [notes, events, contacts]
+    spacing: 0.0
 }
 
 Stage {

@@ -5,7 +5,6 @@
 
 package Quicker;
 
-import java.util.Date;
 import java.util.LinkedList;
 
 /**
@@ -14,21 +13,21 @@ import java.util.LinkedList;
  */
 public class NoteListItem {
     private String title;
-    private Date date;
+    private String date;
     private String extractions; // some text
     private LinkedList<Media> mediaType;
-    private String noteID;
+    private int noteID;
 
-    public NoteListItem(String id, String t, String e, long d, // change to Date d
+    public NoteListItem(int id, String t, String e, String d,
             LinkedList<Media> m) {
         title = new String(t);
-        date = new Date(d);
+        date = new String(d);
         extractions = new String(e);
         mediaType = new LinkedList<Media>(m);
-        noteID = new String(id);
+        noteID = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
     public String getExtractions() {
@@ -40,7 +39,7 @@ public class NoteListItem {
     public LinkedList<Media> getMediaType() {
         return mediaType;
     }
-    public String getNoteID() {
+    public int getNoteID() {
         return noteID;
     }
 }
