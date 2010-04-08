@@ -14,46 +14,32 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import Quicker.noteWindow.showingWindow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.VBox;
 
 public class NoteWindow {
 
     public var title: String;
     public var noteText: String;
+    def color: Color = Color.YELLOW;
     var panel: Integer = 0;
-    var butVis: Boolean = true;
-    var group ;
-    var testMedia = [
+    protected var check: Boolean = true;
+    protected var butVis: Boolean = true;
+    protected var group     ;
+    protected var testMedia = [
                 Image {url: "{__DIR__}Images/closebutton.JPG"},
                 Image {url: "{__DIR__}Images/buttonBind.bmp"},
                 Image {url: "{__DIR__}Images/testImage.jpg"}
             ];
-    def gradient = LinearGradient {
-                startX: 0.0
-                startY: 0.0
-                endX: 0.0
-                endY: 1.8
-                stops: [
-                    Stop {
-                        color: Color.GRAY
-                        offset: 0.0
-                    },
-                    Stop {
-                        color: Color.LIGHTYELLOW
-                        offset: 1.0
-                    },
-                ]
-            }
 
-    public function create(): Stage {        
+    public function create(): Stage {
         var window: Stage = Stage {
                     title: title;
                     style: StageStyle.UNDECORATED
-                    x: 100
-                    y: 100
                     width: 250;
                     height: 400;
                     scene: Scene {
-                        fill: gradient
+                        fill: color
                         content: [
                             Group {
                                 content: [
@@ -63,6 +49,17 @@ public class NoteWindow {
                                         width: bind window.width;
                                         height: bind window.height - 50 - panel;
                                         text: noteText;
+                                    }
+                                    Rectangle {
+                                        layoutX: 30
+                                        layoutY: 0
+                                        width: bind window.width - 60
+                                        height: 20
+                                        fill: color;
+                                        onMouseDragged: function (e) {
+                                            window.x += e.dragX;
+                                            window.y += e.dragY;
+                                        }
                                     }
                                     ImageView {
                                                     var im
@@ -123,18 +120,25 @@ public class NoteWindow {
                                         onMouseExited: function (e) {
                                             im = Image {url: "{__DIR__}Images/buttonMedia.bmp"};
                                         }
-                                        onMouseClicked: function (e) {
+                                        onMouseClicked: function (e: MouseEvent) {
                                             panel = 65;
                                             butVis = false;
                                             group = Group {
-                                                    visible: bind if (butVis == true) false else true;
+                                                visible: bind if (butVis) false else true;
                                                 content: [
+                                                    Rectangle {
+                                                        layoutX: 5;
+                                                        layoutY: bind window.height - 85;
+                                                        height: 50;
+                                                        width: bind window.width - 10;
+                                                        fill: Color.GREENYELLOW;
+                                                    }
                                                     HBox {
                                                         spacing: 10
                                                         layoutX: 10;
                                                         layoutY: bind window.height - 80;
-                                                        height: bind window.height - 10;
-                                                        width: 100;
+                                                        height: 50;
+                                                        width: bind window.width - 20;
                                                         content: [
                                                             for (i: Image in testMedia) {
                                                                 Group {
@@ -145,7 +149,7 @@ public class NoteWindow {
                                                                                     image: i;
                                                                                     fitHeight: 40
                                                                                     fitWidth: 40
-                                                                                    onMouseClicked: function (e: MouseEvent) {
+                                                                                    onMouseClicked: function (ev: MouseEvent) {
                                                                                         var sw: showingWindow = showingWindow {
                                                                                                     h: i.height;
                                                                                                     w: i.width;
@@ -163,14 +167,17 @@ public class NoteWindow {
                                                     }
                                                 ]
                                             }
-                                            window.scene.content = [window.scene.content, group];
+                                            if (check) {
+                                                window.scene.content = [window.scene.content, group];
+                                                check = false;
+                                            }
                                         }
                                     }
                                     ImageView {
-                                                                  var im
+                                                                var im
                                                : Image = Image {url: "{__DIR__}Images/buttonMedia2.BMP"};
                                         image: bind im;
-                                        visible: bind if (butVis==true) false else true;
+                                        visible: bind if (butVis) false else true;
                                         layoutX: bind window.width/2-27;
                                         layoutY: bind window.height-23;
                                         onMouseEntered: function (e)
@@ -185,7 +192,6 @@ public class NoteWindow {
                                             butVis = true;
                                         }
                                     }
-                                    
                                 ]
                             }
                         ]
