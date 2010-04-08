@@ -32,19 +32,17 @@ var contacts = QuickerMenuButton {
 
 var menu: QuickerMenu = QuickerMenu {
     items: [notes, events, contacts]
-    spacing: 0.0
+    spacing: 0
 }
 
 Stage {
     title: "Quicker"
     x: 750
     y: Constants.TOP//bind QuickerMenuButton.top
-    width: 204
+    width: Constants.MENU_BUTTON_WIDTH + 4
     height: bind QuickerMenuButton.wHeight
-    //  style: StageStyle.UNDECORATED
     style: StageStyle.TRANSPARENT
     scene: Scene {
-     //   fill: Color.YELLOW
      fill : null
         content: menu
     }

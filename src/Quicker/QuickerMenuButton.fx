@@ -107,7 +107,7 @@ public class QuickerMenuButton extends CustomNode {
 			Rectangle { // button
 			    smooth: false
 			    cache: true
-			    width: Constants.BUTTON_WIDTH
+			    width: Constants.MENU_BUTTON_WIDTH
 			    height: Constants.MENU_BUTTON_HEIGHT
 			    fill: Constants.BUTTON_COLOR
 			    stroke: Color.BLACK
