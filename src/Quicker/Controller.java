@@ -112,27 +112,25 @@ public class Controller {
             XMLParser parser = new XMLParser(notes);
             double num = (Double)parser.execute("count(//note)",
                     XPathConstants.NUMBER);
-            Object result = parser.execute("/notes//note",
-                    XPathConstants.NODESET);
-            NodeList nodes;
-            nodes = (NodeList)result;
 
             NoteListItem item;
             LinkedList<Media> media;
-            for (int i = 0; i < num; i++) {
+            for (int i = 1; i <= num; i++) {
                 media = new LinkedList<Media>();
-                media.add(Media.Text);
-          /*      if (nodes.item(i).getAttributes().getNamedItem("video").getTextContent().equals("")) {
+                if (((String)parser.execute("/notes/note["+i+"]/@audio", XPathConstants.STRING)).equals("1")) {
+                    media.add(Media.Audio);
+                }
+                if (((String)parser.execute("/notes/note["+i+"]/@video", XPathConstants.STRING)).equals("1")) {
                     media.add(Media.Video);
                 }
-                if (nodes.item(i).getAttributes().getNamedItem("image").getTextContent().equals("")) {
+                if (((String)parser.execute("/notes/note["+i+"]/@image", XPathConstants.STRING)).equals("1")) {
                     media.add(Media.Graphics);
-                }*/
+                }
                 item = new NoteListItem(
-                        Integer.parseInt(nodes.item(i).getChildNodes().item(0).getTextContent()),
-                        nodes.item(i).getChildNodes().item(1).getTextContent(),
-                        nodes.item(i).getChildNodes().item(2).getTextContent(),
-                        nodes.item(i).getChildNodes().item(3).getTextContent(),
+                        Integer.parseInt((String)parser.execute("/notes/note["+i+"]/id", XPathConstants.STRING)),
+                        (String)parser.execute("/notes/note["+i+"]/title", XPathConstants.STRING),
+                        (String)parser.execute("/notes/note["+i+"]/extractions", XPathConstants.STRING),
+                        (String)parser.execute("/notes/note["+i+"]/date", XPathConstants.STRING),
                         media
                         );
                 noteList.add(item);

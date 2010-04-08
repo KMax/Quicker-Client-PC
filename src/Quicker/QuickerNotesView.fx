@@ -13,6 +13,8 @@ import Quicker.Constants;
 import javafx.scene.input.MouseEvent;
 import Quicker.noteWindow.NoteWindow;
 import javafx.scene.layout.HBox;
+import javafx.scene.image.ImageView;
+import javafx.geometry.HPos;
 
 public class QuickerNotesView extends CustomNode {
 
@@ -68,13 +70,16 @@ public class QuickerNotesView extends CustomNode {
 					    }
 					]
 				    } // end VBox
-                                    /*
-                                    VBox { spacing: 0 content: [
-                                            Rectangle { width: 16 height: 16
-                                                fill: if (i.getMediaType().contains(Media.Video)) Color.RED;
+                                    // indicates type of media in each note
+                                    VBox { spacing: 2 content: [ for (p in i.getMediaType()) {
+                                            ImageView {
+                                                image: if (p.equals(Media.Audio)) Constants.AUDIO
+                                                        else if (p.equals(Media.Graphics)) Constants.IMAGE
+                                                        else if (p.equals(Media.Video)) Constants.VIDEO
+                                                        else null
                                             }
-                                            ]
-                                    }*/
+                                            }]
+                                    }
                                     ]}
 				] // end group content
 			    } // end droup
