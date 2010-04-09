@@ -14,8 +14,8 @@ import javafx.scene.image.Image;
 /**
  * @author Kirduk's
  */
-public class showingWindow {
 
+public class showingWindow {
     public var w: Float;
     public var h: Float;
     public var i: Image;
@@ -33,7 +33,6 @@ public class showingWindow {
                     }
                 }
             }
-
     function create() {
         return stage
     }

@@ -5,9 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.Group;
 import Quicker.noteWindow.TextArea;
-import Quicker.ScrollPane;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
 import javafx.stage.StageStyle;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
@@ -15,7 +12,6 @@ import javafx.scene.layout.HBox;
 import Quicker.noteWindow.showingWindow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.layout.VBox;
 
 public class NoteWindow {
 
@@ -25,25 +21,38 @@ public class NoteWindow {
     var panel: Integer = 0;
     protected var check: Boolean = true;
     protected var butVis: Boolean = true;
-    protected var group     ;
+    protected var butVis2: Boolean = false;
+    protected var group ;
+    var visPicker: Boolean = false;
+    var textColor = "#2F4F4F";
+    var t: TextArea;
+    var colorPicker: ColorPicker;
     protected var testMedia = [
                 Image {url: "{__DIR__}Images/closebutton.JPG"},
                 Image {url: "{__DIR__}Images/buttonBind.bmp"},
                 Image {url: "{__DIR__}Images/testImage.jpg"}
             ];
+    var mainIm: Image = Image {url: "{__DIR__}Images/mainB.PNG"};
+    var right: Image = Image {url: "{__DIR__}Images/right.PNG"};
+    var left: Image = Image {url: "{__DIR__}Images/left.PNG"};
+    var center: Image = Image {url: "{__DIR__}Images/center.PNG"};
+    var alAll: Image = Image {url: "{__DIR__}Images/alligmAll.PNG"};
+    var bold: Image = Image {url: "{__DIR__}Images/Bold.PNG"};
+    var I: Image = Image {url: "{__DIR__}Images/I.PNG"};
+    var under: Image = Image {url: "{__DIR__}Images/Underline.PNG"};
 
     public function create(): Stage {
         var window: Stage = Stage {
                     title: title;
                     style: StageStyle.UNDECORATED
-                    width: 250;
+                    width: 300;
                     height: 400;
                     scene: Scene {
                         fill: color
                         content: [
                             Group {
                                 content: [
-                                    TextArea {
+                                    t = TextArea {
                                         layoutX: 0
                                         layoutY: 24
                                         width: bind window.width;
@@ -60,6 +69,116 @@ public class NoteWindow {
                                             window.x += e.dragX;
                                             window.y += e.dragY;
                                         }
+                                    }
+                                    ImageView {
+                                        image: mainIm;
+                                        layoutX: 25
+                                        layoutY: 3
+                                        onMouseClicked: function (e) {
+                                            butVis2 = not butVis2;
+                                        }
+                                    }
+                                    Group {
+                                        visible: bind butVis2;
+                                        content: [
+                                            ImageView {
+                                                image: left;
+                                                layoutX: 51
+                                                layoutY: 3
+                                                onMouseClicked: function (e) {
+                                                    t.setAlig(0);
+
+                                                }
+                                            }
+                                            ImageView {
+                                                image: center;
+                                                layoutX: 72
+                                                layoutY: 3
+                                                onMouseClicked: function (e) {
+                                                    t.setAlig(1);
+
+                                                }
+                                            }
+                                            ImageView {
+                                                image: right;
+                                                layoutX: 93
+                                                layoutY: 3
+                                                onMouseClicked: function (e) {
+                                                    t.setAlig(2);
+
+                                                }
+                                            }
+                                            ImageView {
+                                                image: alAll;
+                                                layoutX: 114
+                                                layoutY: 3
+                                                onMouseClicked: function (e) {
+                                                    t.setAlig(3);
+
+                                                }
+                                            }
+                                            ImageView {
+                                                image: I;
+                                                layoutX: 135
+                                                layoutY: 3
+                                                onMouseClicked: function (e) {
+                                                    t.makeItalic();
+                                                }
+                                            }
+                                            ImageView {
+                                                image: bold;
+                                                layoutX: 156
+                                                layoutY: 3
+                                                onMouseClicked: function (e) {
+                                                    t.makeBold();
+                                                }
+                                            }
+                                            ImageView {
+                                                image: under;
+                                                layoutX: 177
+                                                layoutY: 3
+                                                onMouseClicked: function (e) {
+                                                    t.makeUnderlined();
+                                                }
+                                            }
+                                            Rectangle {
+                                                layoutX: 198
+                                                layoutY: 3
+                                                width: 20
+                                                height: 20
+                                                fill:  bind if (colorPicker.previewColor !=null) colorPicker.previewColor else colorPicker.color
+                                                stroke: Color.web("#BBBBBB");
+                                                onMouseClicked: function (event) {
+                                                    t.setColor(colorPicker.c2);
+                                                }
+                                            }
+                                            Rectangle
+                                            {
+                                                    fill: Color.BLACK;
+                                                    layoutX:219
+                                                    layoutY: 3
+                                                    width: 5
+                                                    height: 20
+                                                    onMouseClicked: function(e)
+                                                    {
+                                                            visPicker = true;
+                                                            }
+                                                    }
+                                            Group {
+                                                visible: bind visPicker;
+                                                layoutX: 224
+                                                layoutY: 3
+                                                content: [
+                                                        colorPicker = ColorPicker {
+                                                        width: 30
+                                                        height: 180
+                                                        onMouseClicked: function (e) {
+                                                            visPicker = false;
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                     ImageView {
                                                     var im
@@ -90,6 +209,9 @@ public class NoteWindow {
                                         }
                                         onMouseExited: function (e) {
                                             im = Image {url: "{__DIR__}Images/buttonBind.bmp"};
+                                        }
+                                        onMouseClicked: function (e) {
+                                            //TODO прилипание к рабочему столу
                                         }
                                     }
                                     ImageView {
@@ -150,11 +272,11 @@ public class NoteWindow {
                                                                                     fitHeight: 40
                                                                                     fitWidth: 40
                                                                                     onMouseClicked: function (ev: MouseEvent) {
-                                                                                        var sw: showingWindow = showingWindow {
-                                                                                                    h: i.height;
-                                                                                                    w: i.width;
-                                                                                                    i: i;
-                                                                                                };
+                                                                                        showingWindow {
+                                                                                            h: i.height;
+                                                                                            w: i.width;
+                                                                                            i: i;
+                                                                                        };
                                                                                     }
                                                                                 }
                                                                             ]
