@@ -67,14 +67,16 @@ public class NoteWindow {
 					width: bind window.width - 60
 					height: 20
 					fill: color;
+
 					onMousePressed: function (event) {
-					    X = window.x;
-					    Y = window.y;
+					    X = event.sceneX;
+					    Y = event.sceneY;
 					}
 					onMouseDragged: function (event) {
-					    window.x = X + event.dragX;
-					    window.y = Y + event.dragY;
+					    window.x = event.screenX-X;
+					    window.y = event.screenY-Y;
 					}
+                                        blocksMouse: true
 				    }
 				    ImageView {
 					image: mainIm;
