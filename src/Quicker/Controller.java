@@ -70,7 +70,7 @@ public class Controller {
                 + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
                 
-                + "<note>"
+                + "<note audio=\"1\">"
                 + "<id>1</id>"
                 + "<title>Заголовок</title>"
                 + "<extractions>Бла бла бла</extractions>"
@@ -155,8 +155,8 @@ public class Controller {
         sNote = "<note id=\"" + id + "\"><title>Заголовок</title><content>"
                 + "<text>Бла бла бла. Контент заметки. Много много много много "
                 + "много много много теста. </text>" +
-                "<image>photo1.jpg</image>" +
-                "<video>video1.mpeg</video></content><date>"
+                "<image>Images/testImage.jpg</image>" +
+                "<video>Images/testImage.jpg</video></content><date>"
                 + "31 фев 2010 23:57:34</date></note>";
         try {
             XMLParser parser = new XMLParser(sNote);
@@ -170,7 +170,7 @@ public class Controller {
             audios.add(audio);
             String image = (String)parser.execute("/note/content/image", XPathConstants.STRING);
             LinkedList<String> images = new LinkedList<String>();
-            videos.add(image);
+            images.add(image);
             String date = (String)parser.execute("/note/date", XPathConstants.STRING);
             
             note = new Note(id, title, text, videos, audios, audios, date);

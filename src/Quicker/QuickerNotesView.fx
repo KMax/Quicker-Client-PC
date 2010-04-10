@@ -36,8 +36,7 @@ public class QuickerNotesView extends CustomNode {
 					fill: Constants.GRADIENT
 					onMouseClicked: function (e: MouseEvent): Void {
 					    var nt: NoteWindow = NoteWindow {
-                                                title: i.getTitle();
-                                                noteText: provider.getNote(Integer.parseInt(e.node.id)).getText();
+						note: provider.getNote(Integer.parseInt(e.node.id));
                                             };
                                             nt.create();
 					}

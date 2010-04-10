@@ -33,7 +33,8 @@ public class TextArea extends SwingComponent {
             updateComponentFlag = false;
                 }
     public  function getText(): String {
-        return editorPane.getText();}
+        return editorPane.getText();
+	}
     override  function createJComponent(): JComponent {
          editorPane =new JEditorPane();
             editorPane.setEditorKit(new HTMLEditorKit());
