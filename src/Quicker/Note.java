@@ -16,23 +16,23 @@ public class Note {
     private String title;
     private String text;
     private LinkedList<String> video;
-    private LinkedList<String> photo;
+    private LinkedList<String> images;
     private LinkedList<String> audio;
     private String date;
 
     public Note(int id, String title, String text,
-            LinkedList<String> video, LinkedList<String> photo,
+            LinkedList<String> video, LinkedList<String> image,
             LinkedList<String> audio, String date) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.video = video;
-        this.photo = photo;
+        this.images = image;
         this.audio = audio;
         this.date = date;
     }
 
-    public LinkedList<String> getAudio() {
+    public LinkedList<String> getAudios() {
         return audio;
     }
 
@@ -44,8 +44,8 @@ public class Note {
         return id;
     }
 
-    public LinkedList<String> getPhoto() {
-        return photo;
+    public LinkedList<String> getImages() {
+        return images;
     }
 
     public String getText() {
@@ -56,7 +56,7 @@ public class Note {
         return title;
     }
 
-    public LinkedList<String> getVideo() {
+    public LinkedList<String> getVideos() {
         return video;
     }
 }

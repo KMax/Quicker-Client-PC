@@ -26,7 +26,7 @@ public class QuickerNotesView extends CustomNode {
 		    content: [
 			for (i: NoteListItem in provider.getNoteList()) { // handle exception
 			    Group {
-				//    cache: true
+				cache: true
 				content: [
 				    Rectangle {
                                         id: "{i.getNoteID()}"
@@ -43,8 +43,6 @@ public class QuickerNotesView extends CustomNode {
 				    }
                                     HBox { spacing: 0 translateY: 3 translateX: 5 content: [
 				    VBox {
-					//translateY: 3
-					//translateX: 5
 					spacing: 0
 					content: [
 					    Text {

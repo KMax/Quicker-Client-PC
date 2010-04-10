@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import Quicker.exceptions.ControllerException;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -56,7 +56,6 @@ public class Controller {
                 + "<extractions>Первая строка</extractions>"
                 + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
-
                 + "<note video=\"1\" image=\"1\">"
                 + "<id>3</id>"
                 + "<title>Третий</title>"
@@ -69,7 +68,6 @@ public class Controller {
                 + "<extractions>Первая строка</extractions>"
                 + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
-                
                 + "<note audio=\"1\">"
                 + "<id>1</id>"
                 + "<title>Заголовок</title>"
@@ -82,7 +80,6 @@ public class Controller {
                 + "<extractions>Первая строка</extractions>"
                 + "<date>31 фев 2010 23:57:34</date>"
                 + "</note>"
-
                 + "<note>"
                 + "<id>1</id>"
                 + "<title>Заголовок</title>"
@@ -110,29 +107,28 @@ public class Controller {
                 + "</notes>";
         try {
             XMLParser parser = new XMLParser(notes);
-            double num = (Double)parser.execute("count(//note)",
+            double num = (Double) parser.execute("count(//note)",
                     XPathConstants.NUMBER);
 
             NoteListItem item;
             LinkedList<Media> media;
             for (int i = 1; i <= num; i++) {
                 media = new LinkedList<Media>();
-                if (((String)parser.execute("/notes/note["+i+"]/@audio", XPathConstants.STRING)).equals("1")) {
+                if (((String) parser.execute("/notes/note[" + i + "]/@audio", XPathConstants.STRING)).equals("1")) {
                     media.add(Media.Audio);
                 }
-                if (((String)parser.execute("/notes/note["+i+"]/@video", XPathConstants.STRING)).equals("1")) {
+                if (((String) parser.execute("/notes/note[" + i + "]/@video", XPathConstants.STRING)).equals("1")) {
                     media.add(Media.Video);
                 }
-                if (((String)parser.execute("/notes/note["+i+"]/@image", XPathConstants.STRING)).equals("1")) {
+                if (((String) parser.execute("/notes/note[" + i + "]/@image", XPathConstants.STRING)).equals("1")) {
                     media.add(Media.Graphics);
                 }
                 item = new NoteListItem(
-                        Integer.parseInt((String)parser.execute("/notes/note["+i+"]/id", XPathConstants.STRING)),
-                        (String)parser.execute("/notes/note["+i+"]/title", XPathConstants.STRING),
-                        (String)parser.execute("/notes/note["+i+"]/extractions", XPathConstants.STRING),
-                        (String)parser.execute("/notes/note["+i+"]/date", XPathConstants.STRING),
-                        media
-                        );
+                        Integer.parseInt((String) parser.execute("/notes/note[" + i + "]/id", XPathConstants.STRING)),
+                        (String) parser.execute("/notes/note[" + i + "]/title", XPathConstants.STRING),
+                        (String) parser.execute("/notes/note[" + i + "]/extractions", XPathConstants.STRING),
+                        (String) parser.execute("/notes/note[" + i + "]/date", XPathConstants.STRING),
+                        media);
                 noteList.add(item);
             }
         } catch (ParserConfigurationException ex) {
@@ -145,7 +141,7 @@ public class Controller {
         } catch (IOException ex) {
             throw new ControllerException(ex);
         }
-        
+
         return noteList;
     }
 
@@ -154,26 +150,59 @@ public class Controller {
         //note = provider.getNote(id);
         sNote = "<note id=\"" + id + "\"><title>Заголовок</title><content>"
                 + "<text>Бла бла бла. Контент заметки. Много много много много "
-                + "много много много теста. </text>" +
-                "<image>Images/testImage.jpg</image>" +
-                "<video>Images/testImage.jpg</video></content><date>"
+                + "много много много теста. </text>"
+                + "<image>Images/testImage.jpg</image>"
+                + "<image>Images/photo1.jpg</image>"
+                + "<video>Images/testImage.jpg</video></content><date>"
                 + "31 фев 2010 23:57:34</date></note>";
         try {
             XMLParser parser = new XMLParser(sNote);
-            String text = (String)parser.execute("/note/content/text", XPathConstants.STRING);
-            String title = (String)parser.execute("/note/title", XPathConstants.STRING);
-            String video = (String)parser.execute("/note/content/audio", XPathConstants.STRING);
+            String text = (String) parser.execute("/note/content/text",
+                    XPathConstants.STRING);
+            String title = (String) parser.execute("/note/title",
+                    XPathConstants.STRING);
+
+            int count = 0;
+            String c = (String) parser.execute("count(/note/content/video)",
+                    XPathConstants.STRING);
+            if (!c.equals("")) {
+                count = Integer.parseInt(c);
+            }
             LinkedList<String> videos = new LinkedList<String>();
-            videos.add(video);
-            String audio = (String)parser.execute("/note/content/video", XPathConstants.STRING);
+            for (int i = 1; i <= count; i++) {
+                String video = (String) parser.execute("/note/content/video",
+                        XPathConstants.STRING);
+                videos.add(video);
+            }
+
+            count = 0;
+            c = (String) parser.execute("count(/note/content/audio)",
+                    XPathConstants.STRING);
+            if (!c.equals("")) {
+                count = Integer.parseInt(c);
+            }
             LinkedList<String> audios = new LinkedList<String>();
-            audios.add(audio);
-            String image = (String)parser.execute("/note/content/image", XPathConstants.STRING);
+            for (int i = 1; i <= count; i++) {
+                String audio = (String) parser.execute("/note/content/audio",
+                    XPathConstants.STRING);
+                audios.add(audio);
+            }
+
+            count = 0;
+            c = (String) parser.execute("count(/note/content/image)",
+                    XPathConstants.STRING);
+            if (!c.equals("")) {
+                count = Integer.parseInt(c);
+            }
             LinkedList<String> images = new LinkedList<String>();
-            images.add(image);
-            String date = (String)parser.execute("/note/date", XPathConstants.STRING);
-            
-            note = new Note(id, title, text, videos, audios, audios, date);
+            for (int i = 1; i <= count; i++) {
+                String image = (String) parser.execute("/note/content/image[" + i + "]",
+                        XPathConstants.STRING);
+                images.add(image);
+            }
+            String date = (String) parser.execute("/note/date", XPathConstants.STRING);
+
+            note = new Note(id, title, text, videos, images, audios, date);
         } catch (ParserConfigurationException ex) {
             throw new ControllerException(ex);
         } catch (SAXException ex) {

@@ -27,7 +27,7 @@ public class NoteWindow {
     var visPicker: Boolean = false;
     var t: TextArea;
     var colorPicker: ColorPicker;
-    protected var testMedia =  [ for (i in note.getPhoto()) {
+    protected var testMedia =  [ for (i in note.getImages()) {
 		java.lang.System.out.println(i);
 		Image { url: "{__DIR__}{i}"}
 		}
