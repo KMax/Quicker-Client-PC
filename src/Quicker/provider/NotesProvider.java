@@ -64,6 +64,7 @@ public class NotesProvider {
 
 		HostnameVerifier hv = new HostnameVerifier() {
 
+			@Override
 			public boolean verify(String urlHostName, SSLSession session) {
 				if (urlHostName.equals(session.getPeerHost())) {
 					return true;
