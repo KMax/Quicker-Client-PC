@@ -25,29 +25,19 @@ import javax.net.ssl.X509TrustManager;
  */
 public class Provider {
 
-	private static String user = "maxim";
+	public static String user = "maxim";
 	private static String pass = "123";
 	private static String serverURL = "https://localhost:8181/Quicker/";
 	private Client client;
+	private KeyStore ks = null;
 	private static Provider instance = null;
 
 	private Provider(){
-		File file = new File("jssecacerts");
-		if (file.isFile() == false) {
-			char SEP = File.separatorChar;
-			File dir = new File(System.getProperty("java.home") + SEP
-					+ "lib" + SEP + "security");
-			file = new File(dir, "jssecacerts");
-			if (file.isFile() == false) {
-				file = new File(dir, "cacerts");
-			}
-		}
-
-		KeyStore ks = null;
+		
 		try {
 			ks = KeyStore.getInstance(KeyStore.getDefaultType());
 			InputStream in;
-			in = new FileInputStream(file);
+			in = new FileInputStream(getCacerts());
 			ks.load(in, "changeit".toCharArray());
 			in.close();
 		} catch (Exception ex) {
@@ -57,7 +47,8 @@ public class Provider {
 		SavingTrustManager tm = null;
 		try{
 			TrustManagerFactory tmf =
-					TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+					TrustManagerFactory.getInstance(TrustManagerFactory.
+					getDefaultAlgorithm());
 			tmf.init(ks);
 			X509TrustManager defaultTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
 			 tm = new SavingTrustManager(defaultTrustManager);
@@ -66,7 +57,6 @@ public class Provider {
 		}
 		
 		HostnameVerifier hv = new HostnameVerifier() {
-
 			@Override
 			public boolean verify(String urlHostName, SSLSession session) {
 				if (urlHostName.equals(session.getPeerHost())) {
@@ -76,6 +66,7 @@ public class Provider {
 				}
 			}
 		};
+		
 		SSLContext ssl = null;
 		try{
 			ssl = SSLContext.getInstance("TLSv1");
@@ -88,7 +79,7 @@ public class Provider {
 			ex.printStackTrace();
 		}
 
-		
+		//Проверка соединения с сервером
 		try {
 			SSLSocketFactory factory = ssl.getSocketFactory();
 			SSLSocket socket = (SSLSocket)factory.createSocket("localhost", 8181);
@@ -96,17 +87,16 @@ public class Provider {
 			System.out.println("Starting SSL handshake...");
 			socket.startHandshake();
 			socket.close();
-			System.out.println();
 			System.out.println("No errors, certificate is already trusted");
 		} catch (Exception e) {
+			//Сертификат не проверен
 			System.out.println("certificate not trusted...");
 			X509Certificate[] chain = tm.chain;
 			X509Certificate cert = chain[0];
 			String alias = "localhost" + "-" + (0 + 1);
 			try{
 				ks.setCertificateEntry(alias, cert);
-
-				OutputStream out = new FileOutputStream(file);
+				OutputStream out = new FileOutputStream(getCacerts());
 				ks.store(out, "changeit".toCharArray());
 				out.close();
 			}catch(Exception ex){
@@ -138,5 +128,23 @@ public class Provider {
 
 	public void post(String uri,Object t){
 		client.resource(uri).post(t);
+	}
+
+	/**
+	 *
+	 * @return java.io.File - file contains trusted certificates
+	 */
+	private File getCacerts(){
+		File file = new File("jssecacerts");
+		if (file.isFile() == false) {
+			char SEP = File.separatorChar;
+			File dir = new File(System.getProperty("java.home") + SEP
+					+ "lib" + SEP + "security");
+			file = new File(dir, "jssecacerts");
+			if (file.isFile() == false) {
+				file = new File(dir, "cacerts");
+			}
+		}
+		return file;
 	}
 }

@@ -32,20 +32,15 @@ public class NotesProvider {
     }
 
 	public void updateNote(String note, int id) {
-        
+        provider.put("maxim/note/"+id, note);
     }
 
 	public void deleteNote(int id) {
-       
+		provider.delete(Provider.user+"/"+id);
     }
 
 	public void createNote(String note) {
-		
-	}
-
-	public static void main(String args[]){
-		NotesProvider p = NotesProvider.getInstance();
-		System.out.println(p.getNotesList());
+		provider.post(Provider.user+"/note/", note);
 	}
 }
 
