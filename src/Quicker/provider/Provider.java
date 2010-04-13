@@ -7,10 +7,16 @@ import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
@@ -27,12 +33,19 @@ public class Provider {
 
 	public static String user = "maxim";
 	private static String pass = "123";
-	private static String serverURL = "https://localhost:8181/Quicker/";
+	private static URL serverURL = null;
 	private Client client;
 	private KeyStore ks = null;
+	private SSLContext ssl = null;
 	private static Provider instance = null;
 
 	private Provider(){
+		
+		try {
+			serverURL = new URL("HTTPS", "localhost", 8181, "/Quicker/");
+		} catch (MalformedURLException ex) {
+			ex.printStackTrace();
+		}
 		
 		try {
 			ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -51,7 +64,7 @@ public class Provider {
 					getDefaultAlgorithm());
 			tmf.init(ks);
 			X509TrustManager defaultTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
-			 tm = new SavingTrustManager(defaultTrustManager);
+			tm = new SavingTrustManager(defaultTrustManager);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -67,7 +80,7 @@ public class Provider {
 			}
 		};
 		
-		SSLContext ssl = null;
+		
 		try{
 			ssl = SSLContext.getInstance("TLSv1");
 			ssl.init(null, new TrustManager[]{tm}, SecureRandomEx.getInstance("HMACDRBG"));
@@ -79,32 +92,46 @@ public class Provider {
 			ex.printStackTrace();
 		}
 
-		//Проверка соединения с сервером
-		try {
-			SSLSocketFactory factory = ssl.getSocketFactory();
-			SSLSocket socket = (SSLSocket)factory.createSocket("localhost", 8181);
-			socket.setSoTimeout(10000);
-			System.out.println("Starting SSL handshake...");
-			socket.startHandshake();
-			socket.close();
-			System.out.println("No errors, certificate is already trusted");
-		} catch (Exception e) {
-			//Сертификат не проверен
-			System.out.println("certificate not trusted...");
+		if(!IsCertAlreadyTrusted()){
 			X509Certificate[] chain = tm.chain;
 			X509Certificate cert = chain[0];
-			String alias = "localhost" + "-" + (0 + 1);
-			try{
-				ks.setCertificateEntry(alias, cert);
-				OutputStream out = new FileOutputStream(getCacerts());
-				ks.store(out, "changeit".toCharArray());
-				out.close();
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-			System.out.println("Certificete added.");
+			addCertInStore(serverURL.getHost(), cert);
 		}
+	}
 
+	/**
+	 * Try out "Handshake"
+	 * @return
+	 */
+	public boolean IsCertAlreadyTrusted(){
+		try{
+			SSLSocketFactory factory = ssl.getSocketFactory();
+			SSLSocket socket = (SSLSocket)factory.createSocket(
+					serverURL.getHost(), serverURL.getPort());
+			socket.setSoTimeout(10000);
+			socket.startHandshake();
+			socket.close();
+		}catch(Exception ex){
+			System.out.println(ex.getMessage());
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Add certificate in key store
+	 * @param alias - Name of host for certificate's record
+	 * @param chain - Certificate
+	 */
+	private void addCertInStore(String alias, X509Certificate chain){
+		try{
+			ks.setCertificateEntry(alias, chain);
+			OutputStream out = new FileOutputStream(getCacerts());
+			ks.store(out, "changeit".toCharArray());
+			out.close();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 	public static Provider getInstance(){
@@ -115,19 +142,19 @@ public class Provider {
 	}
 
 	public <T> T get(String uri,Class<T> t){
-		return client.resource(serverURL + uri).get(t);
+		return client.resource(serverURL.toString() + uri).get(t);
 	}
 
 	public void delete(String uri){
-		client.resource(uri).delete();
+		client.resource(serverURL.toString()+uri).delete();
 	}
 
 	public void put(String uri,Object t){
-		client.resource(uri).put(t);
+		client.resource(serverURL.toString()+uri).put(t);
 	}
 
 	public void post(String uri,Object t){
-		client.resource(uri).post(t);
+		client.resource(serverURL.toString()+uri).post(t);
 	}
 
 	/**
