@@ -79,4 +79,28 @@ public class Note {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void removeVideo(int position) {
+        this.video.remove(position);
+    }
+
+    public void removeVideo(String s) {
+        this.video.remove(s);
+    }
+
+    public void removeAudio(int position) {
+        this.audio.remove(position);
+    }
+
+    public void removeAudio(String s) {
+        this.audio.remove(s);
+    }
+
+    public void removeImage(int position) {
+        this.images.remove(position);
+    }
+
+    public void removeImage(String s) {
+        this.images.remove(s);
+    }
 }
