@@ -37,6 +37,7 @@ public class Provider {
 	private Client client;
 	private KeyStore ks;
 	private SSLContext ssl;
+	private SavingTrustManager tm;
 	private char[] trustPass = {'c', 'h', 'a', 'n', 'g', 'e', 'i', 't'};
 	private JsseProvider rsaJsseProvider = new JsseProvider();
 	private JsafeJCE rsaJceProvider = new JsafeJCE();
@@ -45,17 +46,7 @@ public class Provider {
 		this.user = user;
 		this.serverURL = host;
 
-		SavingTrustManager tm = null;
-		try {
-			TrustManagerFactory tmf = createTrustManagerFactory();
-			X509TrustManager defaultTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
-			tm = new SavingTrustManager(defaultTrustManager);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
 		HostnameVerifier hv = new HostnameVerifier() {
-
 			@Override
 			public boolean verify(String urlHostName, SSLSession session) {
 				if (urlHostName.equals(session.getPeerHost())) {
@@ -65,23 +56,34 @@ public class Provider {
 				}
 			}
 		};
+		
+		init();
 
+		if (!IsCertAlreadyTrusted()) {
+			//FIXME If user allowed to mark this certificate as trusted
+			X509Certificate[] chain = tm.chain;
+			X509Certificate cert = chain[0];
+			addCertInStore(serverURL.getHost(), cert);
+		}
+
+		HTTPSProperties https = new HTTPSProperties(hv, ssl);
+		client = Client.create();
+		client.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, https);
+		client.addFilter(new HTTPBasicAuthFilter(user, pass));
+	}
+
+	private void init(){
+		try{
+			tm = createTrustManager();
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
 
 		try {
 			ssl = SSLContext.getInstance("TLSv1");
 			ssl.init(null, new TrustManager[]{tm}, SecureRandomEx.getInstance("HMACDRBG"));
-			HTTPSProperties https = new HTTPSProperties(hv, ssl);
-			client = Client.create();
-			client.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, https);
-			client.addFilter(new HTTPBasicAuthFilter(user, pass));
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}
-
-		if (!IsCertAlreadyTrusted()) {
-			X509Certificate[] chain = tm.chain;
-			X509Certificate cert = chain[0];
-			addCertInStore(serverURL.getHost(), cert);
 		}
 	}
 
@@ -113,13 +115,15 @@ public class Provider {
 			ks.setCertificateEntry(alias, chain);
 			
 			if(getTrustStore() == null){
-				ks.store(new FileOutputStream("TrustStore.pkcs12"), trustPass);
+				ks.store(new FileOutputStream("TrustStore.p12"), trustPass);
 			}else{
 				OutputStream out = new FileOutputStream(getTrustStore());
 				ks.store(out, trustPass);
 				out.close();
 			}
-			
+
+			init();
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -147,14 +151,14 @@ public class Provider {
 	 */
 	private File getTrustStore() {
 		char SEP = File.separatorChar;
-		File file = new File("TrustStore.pkcs12");
+		File file = new File("TrustStore.p12");
 		if (!(file.isFile())) {
 			return null;
 		}
 		return file;
 	}
 
-	private TrustManagerFactory createTrustManagerFactory()
+	private SavingTrustManager createTrustManager()
 			throws NoSuchAlgorithmException, KeyStoreException,
 			IOException, CertificateException {
 
@@ -172,6 +176,9 @@ public class Provider {
 		TrustManagerFactory tmf =
 				TrustManagerFactory.getInstance(JsseProvider.PKIX, rsaJsseProvider);
 		tmf.init(ks);
-		return tmf;
+		X509TrustManager defaultTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
+			
+		return new SavingTrustManager(defaultTrustManager);
 	}
+
 }
