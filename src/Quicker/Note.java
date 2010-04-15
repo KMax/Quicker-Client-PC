@@ -59,4 +59,24 @@ public class Note {
     public LinkedList<String> getVideos() {
         return video;
     }
+
+    public void addVideo(String vid) {
+        this.video.add(vid);
+    }
+
+    public void addAudio(String audio) {
+        this.audio.add(audio);
+    }
+
+    public void addImage(String img) {
+        this.images.add(img);
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }
