@@ -98,7 +98,6 @@ public class Provider {
 			socket.startHandshake();
 			socket.close();
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			return false;
 		}
 		return true;
@@ -112,9 +111,15 @@ public class Provider {
 	private void addCertInStore(String alias, X509Certificate chain) {
 		try {
 			ks.setCertificateEntry(alias, chain);
-			OutputStream out = new FileOutputStream(getTrustStore());
-			ks.store(out, "changeit".toCharArray());
-			out.close();
+			
+			if(getTrustStore() == null){
+				ks.store(new FileOutputStream("TrustStore.pkcs12"), trustPass);
+			}else{
+				OutputStream out = new FileOutputStream(getTrustStore());
+				ks.store(out, trustPass);
+				out.close();
+			}
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -141,20 +146,10 @@ public class Provider {
 	 * @return - file contains trusted certificates
 	 */
 	private File getTrustStore() {
-		File file = new File("jssecacerts");
-		if (file.isFile() == false) {
-			try {
-				file.createNewFile();
-				//			char SEP = File.separatorChar;
-				//			File dir = new File(System.getProperty("java.home") + SEP
-				//					+ "lib" + SEP + "security");
-				//			file = new File(dir, "jssecacerts");
-				//			if (file.isFile() == false) {
-				//			}
-				//			}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+		char SEP = File.separatorChar;
+		File file = new File("TrustStore.pkcs12");
+		if (!(file.isFile())) {
+			return null;
 		}
 		return file;
 	}
@@ -164,9 +159,15 @@ public class Provider {
 			IOException, CertificateException {
 
 		ks = KeyStore.getInstance("PKCS12", rsaJceProvider);
-		InputStream in = new FileInputStream(getTrustStore());
-		ks.load(in, trustPass);
-		in.close();
+		
+		if(getTrustStore()==null){
+			ks.load(null, null);
+		}else{
+			InputStream in = new FileInputStream(getTrustStore());
+			ks.load(in, trustPass);
+			in.close();
+		}
+		
 
 		TrustManagerFactory tmf =
 				TrustManagerFactory.getInstance(JsseProvider.PKIX, rsaJsseProvider);
