@@ -44,6 +44,7 @@ public class ScrollPane extends CustomNode {
 		height: bind height
 	    }
     def hsb: ScrollBar = ScrollBar {
+		translateY: bind height - hsb.height;
 		min: 0.0;
 		max: 1.0;
 		visible: bind (w > width and horizontal);
@@ -58,15 +59,17 @@ public class ScrollPane extends CustomNode {
 	clipY: bind vsb.value*(h - height);
 
 	onMouseWheelMoved:function(e:MouseEvent){
-		def tmp = vsb.value + e.wheelRotation/wheelSpeed;
-		if(tmp <= vsb.max){
-		    if(tmp >=vsb.min){
-			vsb.value = tmp;
+		if(vertical){
+		    def tmp = vsb.value + e.wheelRotation/wheelSpeed;
+		    if(tmp <= vsb.max){
+			if(tmp >=vsb.min){
+			    vsb.value = tmp;
+			}else{
+			    vsb.value = vsb.min;
+			}
 		    }else{
-			vsb.value = vsb.min;
+			vsb.value = vsb.max;
 		    }
-		}else{
-		    vsb.value = vsb.max;
 		}
 	}
     }
