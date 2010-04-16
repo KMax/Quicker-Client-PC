@@ -13,6 +13,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import org.xml.sax.SAXException;
 import Quicker.exceptions.ControllerException;
+import Quicker.provider.Provider;
 
 /**
  *
@@ -21,7 +22,7 @@ import Quicker.exceptions.ControllerException;
 public class Controller {
 
     private static Controller instance = null;
-    private QuickerNotesProvider provider;
+    private Provider provider;
     private LinkedList<NoteListItem> noteList;
     private Note note;
 
