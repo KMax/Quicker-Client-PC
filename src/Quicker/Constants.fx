@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
  public def TOP = 150;
  public def MENU_BUTTON_HEIGHT = 30;
  public def hIndent: Integer = 350;
- public def ITEM_HEIGHT = 50;
+ public def ITEM_HEIGHT = 60;
  public def AREA_WIDTH = 160;
  public def VIEWER_WIDTH = 150;
  public def MENU_BUTTON_WIDTH = 180;

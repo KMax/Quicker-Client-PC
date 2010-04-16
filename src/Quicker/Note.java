@@ -20,6 +20,11 @@ public class Note {
     private LinkedList<String> audio;
     private String date;
 
+    public Note() {
+        this(0, "", "", new LinkedList<String>(), new LinkedList<String>(),
+                new LinkedList<String>(), "");
+    }
+
     public Note(int id, String title, String text,
             LinkedList<String> video, LinkedList<String> image,
             LinkedList<String> audio, String date) {

@@ -214,6 +214,75 @@ public class Controller {
         return note;
     }
 
+    public Note newNote() {
+        note = new Note();
+        return note;
+    }
+
+    public void saveNewNote(Note noteToSave) {
+        System.out.println("Saved. ");
+        String toSend = "<note>" +
+                "<title>" + noteToSave.getTitle() + "</title>" +
+                "<content>" +
+                "<text>" + noteToSave.getText() + "</text>";
+        LinkedList<String> imgs = noteToSave.getImages();
+        if (imgs.size() > 0) {
+            for (String img : imgs) {
+                toSend += "<image>"+img+"</image>";
+            }
+        }
+        LinkedList<String> vids = noteToSave.getVideos();
+        if (vids.size() > 0) {
+            for (String vid : vids) {
+                toSend += "<image>"+vid+"</image>";
+            }
+        }
+        LinkedList<String> auds = noteToSave.getAudios();
+        if (auds.size() > 0) {
+            for (String a : imgs) {
+                toSend += "<image>"+a+"</image>";
+            }
+        }
+        toSend += "</content><date>"+noteToSave.getDate()+"</date>" +
+                "</note>";
+    //    provider.createNote(toSend);
+    }
+
+    public void saveNote(Note noteToSave) {
+        System.out.println("Saved. ");
+        String toSend = "<note>" +
+                "<id>" + noteToSave.getId() + "</id>" +
+                "<title>" + noteToSave.getTitle() + "</title>" +
+                "<content>" +
+                "<text>" + noteToSave.getText() + "</text>";
+        LinkedList<String> imgs = noteToSave.getImages();
+        if (imgs.size() > 0) {
+            for (String img : imgs) {
+                toSend += "<image>"+img+"</image>";
+            }
+        }
+        LinkedList<String> vids = noteToSave.getVideos();
+        if (vids.size() > 0) {
+            for (String vid : vids) {
+                toSend += "<image>"+vid+"</image>";
+            }
+        }
+        LinkedList<String> auds = noteToSave.getAudios();
+        if (auds.size() > 0) {
+            for (String a : imgs) {
+                toSend += "<image>"+a+"</image>";
+            }
+        }
+        toSend += "</content><date>"+noteToSave.getDate()+"</date>" +
+                "</note>";
+        // ToDo: update note list
+    //    provider.updateNote(noteToSave.getId(), toSend);
+    }
+
+    public void deleteNote(int id) {
+    //    provider.deleteNote(id);
+    }
+
     public LinkedList<NoteListItem> getEventList() {
         return null;
     }

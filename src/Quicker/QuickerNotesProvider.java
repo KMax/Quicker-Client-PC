@@ -36,12 +36,12 @@ public class QuickerNotesProvider {
         _authentication = new ChallengeResponse(_scheme, _user, "123");
     }
 
-    public boolean createNote(String title) {
+    public boolean createNote(String content) {
     //	ClientResource resource = new ClientResource(Method.POST, _serverUrl + "/" + _user + "/note/");
     //	resource.setChallengeResponse(_authentication);
     	
         Request request = new Request(Method.POST, _serverUrl + "/" + _user + "/note/");
-        String toSend = title;
+        String toSend = content;
         request.setEntity(toSend, MediaType.valueOf("application/atom+xml"));
 		request.setChallengeResponse(_authentication);
         String result = handleResponse(_client.handle(request));
@@ -60,7 +60,7 @@ public class QuickerNotesProvider {
         return result;
     }
 
-    public boolean updateNote(int id) {
+    public boolean updateNote(int id, String content) {
         Request request = new Request(Method.PUT, _serverUrl + "/" + _user + "/note/1");
         request.setChallengeResponse(_authentication);
         request.setEntity("<note>That's my note updated. </note>", MediaType.APPLICATION_XML);

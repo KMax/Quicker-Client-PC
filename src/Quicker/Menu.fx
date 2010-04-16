@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
 * Menu with popups
 * @author Илья
 */
- public class QuickerMenu extends CustomNode {
+ public class Menu extends CustomNode {
     public var items: MenuButton[];
     public var spacing: Number;
 
