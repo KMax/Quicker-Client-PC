@@ -33,7 +33,7 @@ var contacts = MenuButton {
     viewer: ContactsView { visible:false }
 }
 
-var menu: QuickerMenu = QuickerMenu {
+var menu: Menu = Menu {
     items: [notes, events, contacts]
     spacing: 0
 }
