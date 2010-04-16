@@ -10,13 +10,13 @@ import javafx.scene.layout.VBox;
 * @author Илья
 */
  public class QuickerMenu extends CustomNode {
-    public var items: QuickerMenuButton[];
+    public var items: MenuButton[];
     public var spacing: Number;
 
     /**
     *  places the item to the menu top
     */
-    function onTop(it: QuickerMenuButton) {
+    function onTop(it: MenuButton) {
         delete it from items;
         insert it before items[0];
     }
@@ -32,7 +32,7 @@ import javafx.scene.layout.VBox;
 
                         // if click is not on menu item, return
                         if (not(e.source.parent.parent.getClass().equals(items[0].getClass()))) return;
-                        var chosen:QuickerMenuButton = e.source.parent.parent as QuickerMenuButton;
+                        var chosen:MenuButton = e.source.parent.parent as MenuButton;
 
                         // choosing the right way to expand/hide menu items
                         for (item in items) {

@@ -9,25 +9,28 @@ import javafx.scene.Scene;
 import javafx.stage.StageStyle;
 
 import Quicker.Constants;
+import Quicker.views.ContactsView;
+import Quicker.views.NotesView;
+import Quicker.views.EventsView;
 
 /**
  * @author Илья
  */
 
-var notes = QuickerMenuButton {
+var notes = MenuButton {
     text: "Заметки"
     id: "notes"
-    viewer: QuickerNotesView { visible:false }
+    viewer: NotesView { visible:false }
 }
-var events = QuickerMenuButton {
+var events = MenuButton {
     text: "События"
     id: "events"
-    viewer: QuickerEventsView { visible:false }
+    viewer: EventsView { visible:false }
 }
-var contacts = QuickerMenuButton {
+var contacts = MenuButton {
     text: "Контакты"
     id: "contacts"
-    viewer: QuickerContactsView { visible:false }
+    viewer: ContactsView { visible:false }
 }
 
 var menu: QuickerMenu = QuickerMenu {
@@ -40,7 +43,7 @@ Stage {
     x: 750
     y: Constants.TOP//bind QuickerMenuButton.top
     width: Constants.MENU_BUTTON_WIDTH + 4
-    height: bind QuickerMenuButton.wHeight
+    height: bind MenuButton.wHeight
     style: StageStyle.TRANSPARENT
     scene: Scene {
      fill : null

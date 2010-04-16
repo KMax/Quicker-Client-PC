@@ -9,26 +9,36 @@ import javafx.scene.image.Image;
  * @author Илья
  */
 
- package def HEIGHT = 98;
- package def TOP = 100;
- package def MENU_BUTTON_HEIGHT = 30;
- package def hIndent: Integer = 350;
- package def ITEM_HEIGHT = 50;
- package def AREA_WIDTH = 160;
- package def VIEWER_WIDTH = 150;
- package def MENU_BUTTON_WIDTH = 180;
+ public def HEIGHT = 98;
+ public def TOP = 150;
+ public def MENU_BUTTON_HEIGHT = 30;
+ public def hIndent: Integer = 350;
+ public def ITEM_HEIGHT = 50;
+ public def AREA_WIDTH = 160;
+ public def VIEWER_WIDTH = 150;
+ public def MENU_BUTTON_WIDTH = 180;
  
- package def AUDIO = Image {
-         url: "{__DIR__}audio.png"                            
+ public def AUDIO = Image {
+         url: "{__DIR__}audio.png"
          }
- package def VIDEO = Image {
+ public def VIDEO = Image {
          url: "{__DIR__}video.png"
          }
- package def IMAGE = Image {
+ public def IMAGE = Image {
          url: "{__DIR__}image.png"
          }
+ public def ADD_BUTTON = Image {
+         url: "{__DIR__}views/add.png"
+         height:16
+         width:16
+ }
+  public def REMOVE_BUTTON = Image {
+         url: "{__DIR__}views/remove.png"
+ }
 
- package def BUTTON_COLOR = LinearGradient {
+
+
+ public def BUTTON_COLOR = LinearGradient {
             startX: 0.0
             startY: 1.0
             endX: 0.0
@@ -45,7 +55,7 @@ import javafx.scene.image.Image;
             ]
         }
 
- package def GRADIENT = LinearGradient {
+ public def GRADIENT = LinearGradient {
             startX: 0.0
             startY: 0.0
             endX: 1.0

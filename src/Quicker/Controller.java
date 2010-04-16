@@ -13,7 +13,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import org.xml.sax.SAXException;
 import Quicker.exceptions.ControllerException;
-import org.w3c.dom.NodeList;
 
 /**
  *
