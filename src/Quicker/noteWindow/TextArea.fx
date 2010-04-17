@@ -38,6 +38,9 @@ public class TextArea extends SwingComponent {
     override  function createJComponent(): JComponent {
          editorPane =new JEditorPane();
             editorPane.setEditorKit(new HTMLEditorKit());
+            editorPane.setContentType("text/html; charset=utf-8");
+            editorPane.setDragEnabled(true);
+            editorPane.setDoubleBuffered(true);
             editorPane.setEditable(editable );
             editorPane.setBackground(Color.YELLOW);
         var keyListener: KeyAdapter = KeyAdapter{
