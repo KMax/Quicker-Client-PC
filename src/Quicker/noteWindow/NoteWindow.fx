@@ -1,3 +1,31 @@
+/***************************************************************************
+*
+*	Copyright 2010 Quicker Team
+*
+*	Quicker Team is:
+*		Kirdeev Andrey (kirduk@yandex.ru)
+* 	Koritniy Ilya (korizzz230@bk.ru)
+* 	Kolchin Maxim	(kolchinmax@gmail.com)
+*/
+/****************************************************************************
+*
+*	This file is part of Quicker.
+*
+*	Quicker is free software: you can redistribute it and/or modify
+*	it under the terms of the GNU Lesser General Public License as published by
+*	the Free Software Foundation, either version 3 of the License, or
+*	(at your option) any later version.
+*
+*	Quicker is distributed in the hope that it will be useful,
+*	but WITHOUT ANY WARRANTY; without even the implied warranty of
+*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*	GNU Lesser General Public License for more details.
+*
+*	You should have received a copy of the GNU Lesser General Public License
+*	along with Quicker. If not, see <http://www.gnu.org/licenses/>
+
+
+****************************************************************************/
 package Quicker.noteWindow;
 
 import javafx.stage.Stage;
@@ -21,8 +49,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javafx.scene.Node;
 import Quicker.Controller;
-import java.lang.StringBuilder;
-import java.lang.Character;
 import javafx.scene.effect.GaussianBlur;
 
 public class NoteWindow {
@@ -30,7 +56,7 @@ public class NoteWindow {
 
 
 
-    var path: String = "C:/";   // PATH TO TEMPORARY FILES
+    var path: String = "/home/Maxim/Картинки/Webcam";   // PATH TO TEMPORARY FILES
 
 
 
@@ -40,8 +66,9 @@ public class NoteWindow {
     var title: String = note.getTitle();
     var sp: ScrollPane;
     var window: Stage;
-    var noteText: String = "<i><b>{title}</b></i><br><br>{note.getText()}";
-    def color: Color = Color.YELLOW;
+    var noteText: String = note.getText();
+    def color: Color = bind Color.rgb(255, 120, 17);
+    //def color: Color = bind Color.rgb(colorPicker.c2.getRed(), colorPicker.c2.getGreen(), colorPicker.c2.getBlue());
     var panel: Integer = 0;
     protected var check: Boolean = true;
     protected var butVis: Boolean = true;
@@ -55,7 +82,6 @@ public class NoteWindow {
                                    i
                                 }
             ];
-
 
             //setup for media content (showing)
             var hbx:Node[] =  for (i in testMedia) {
@@ -106,41 +132,24 @@ public class NoteWindow {
     var X: Float;
     var Y: Float;
 
-    function getTitle(): Void{
-            var s: Character[] = t.getText().toCharArray();
-            var i = 0;
-            var pattern:Character[] = "<br>".toCharArray();
-            var SB: StringBuilder = new StringBuilder();
-            while(i < sizeof(s))
-            {
-                    if (s[i] != pattern[0]){
-                            SB.append(s[i]);
-                            i++;
-                            }else{
-                                    try{
-                                    if (s[i+1]==pattern[1] and s[i+2]==pattern[2] and s[i+3]==pattern[3]){
-                                            title = SB.toString();
-                                            SB = new StringBuilder();
-                                            while (i < sizeof(s)){
-                                            SB.append(s[i]);
-                                            i++;}
-                                            noteText = SB.toString();
-                                            return;
-                                            }else{
-                                                    SB.append(s[i]);
-                                                    i++;
-                                                    }
-                                    }catch(ex){
-                                            title = SB.toString();
-                                            SB = new StringBuilder();
-                                            while (i < sizeof(s)){
-                                            SB.append(s[i]);
-                                            i++;}
-                                            noteText = SB.toString();
-                                            return;
-                                            }
-                                    }
+    function Parse(s: String ){
+
             }
+
+    function PrepareToSave(): Void{
+            var s:String = t.getText();
+            var i1: Integer = s.indexOf("<body>");
+            var i2: Integer = s.indexOf("</body>");
+            var sTemp: String = s.substring(i1+7, i2);
+            i1 = sTemp.indexOf(0xA);
+            if (i1== -1)
+            {
+                    title = sTemp;
+                    noteText = "";
+                    return;
+                    }
+            title = sTemp.substring(1,i1);
+            noteText = sTemp.substring(i1, sTemp.length()-1);
             }
 
     public function create(): Stage {
@@ -215,7 +224,7 @@ public class NoteWindow {
             width: 300;
             height: 400;
             scene: Scene {
-                fill: color
+                fill: bind color
                 content: [
                     Group {
                         content: [
@@ -225,7 +234,7 @@ public class NoteWindow {
                                 layoutY: 24
                                 width: bind window.width;
                                 height: bind window.height - 50 - panel;
-                                text: noteText;
+                                text: "{title} {noteText}";
                             }
                             //Button for changing window size
                             ImageView {
@@ -251,7 +260,7 @@ public class NoteWindow {
                                 layoutY: 0
                                 width: bind window.width - 60
                                 height: 20
-                                fill: color;
+                                fill: bind color;
                                 onMousePressed: function (event) {
                                     X = event.sceneX;
                                     Y = event.sceneY;
@@ -368,7 +377,7 @@ public class NoteWindow {
                                         layoutY: 3
                                         content: [
                                             colorPicker = ColorPicker {
-                                                width: 30
+                                                width: 50
                                                 height: 180
                                                 onMouseClicked: function (e) {
                                                     visPicker = false;
@@ -444,7 +453,7 @@ public class NoteWindow {
                                     var c = Controller.getInstance();
                                     //if not empty TextArea
                                     if(t.getText() != ""){
-                                    getTitle();                                    
+                                    PrepareToSave();
                                     note.setText(noteText);
                                     note.setTitle(title);
                                     }else{
@@ -456,8 +465,6 @@ public class NoteWindow {
                                     c.saveNewNote(note)
                                     else
                                     c.saveNote(note);
-                                    java.lang.System.out.println(title);
-                                    java.lang.System.out.println(noteText);
                                 }
                             }
                             //Button for opening media content
@@ -488,7 +495,7 @@ public class NoteWindow {
                                                 layoutY: bind window.height - 87;
                                                 height: 60;
                                                 width: bind window.width;
-                                                fill: Color.ORANGE;
+                                                fill: Color.rgb(245, 180, 50);
                                                 effect: GaussianBlur{ radius: 20 }//                                                    
                                             }
                                             //SrollPane

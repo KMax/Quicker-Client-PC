@@ -5,6 +5,7 @@
 package Quicker;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.xml.sax.SAXException;
 import Quicker.exceptions.ControllerException;
 import Quicker.provider.Provider;
+import java.net.URL;
 
 /**
  *
@@ -34,77 +36,19 @@ public class Controller {
     }
 
     private Controller() {
-        //   provider = QuickerNotesProvider.getInstance();
+		try {
+			provider = new Provider(new URL("https://localhost:8181/Quicker/"), "maxim", "123");
+		} catch (MalformedURLException ex) {
+			Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+		}
         noteList = new LinkedList<NoteListItem>();
     }
 
     public LinkedList<NoteListItem> getNoteList()
             throws ControllerException {
         String notes;
-        //   notes = provider.getNotesList();
+        notes = provider.get("maxim/notes/", String.class);
 
-        notes = "<notes count=\"4\">"
-                + "<note video=\"1\">"
-                + "<id>1</id>"
-                + "<title>Заголовок</title>"
-                + "<extractions>Бла бла бла</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note image=\"1\">"
-                + "<id>2</id>"
-                + "<title>Второй</title>"
-                + "<extractions>Первая строка</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note video=\"1\" image=\"1\">"
-                + "<id>3</id>"
-                + "<title>Третий</title>"
-                + "<extractions>Бла бла бла</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note video=\"1\" image=\"\">"
-                + "<id>4</id>"
-                + "<title>Четвёртый</title>"
-                + "<extractions>Первая строка</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note audio=\"1\">"
-                + "<id>1</id>"
-                + "<title>Заголовок</title>"
-                + "<extractions>Бла бла бла</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note>"
-                + "<id>2</id>"
-                + "<title>Второй</title>"
-                + "<extractions>Первая строка</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note>"
-                + "<id>1</id>"
-                + "<title>Заголовок</title>"
-                + "<extractions>Бла бла бла</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note>"
-                + "<id>2</id>"
-                + "<title>Второй</title>"
-                + "<extractions>Первая строка</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note>"
-                + "<id>1</id>"
-                + "<title>Заголовок</title>"
-                + "<extractions>Бла бла бла</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"
-                + "<note>"
-                + "<id>2</id>"
-                + "<title>Второй</title>"
-                + "<extractions>Первая строка</extractions>"
-                + "<date>31 фев 2010 23:57:34</date>"
-                + "</note>"/* */
-                + "</notes>";
         try {
             XMLParser parser = new XMLParser(notes);
             double num = (Double) parser.execute("count(//note)",
@@ -147,14 +91,7 @@ public class Controller {
 
     public Note getNote(int id) throws ControllerException {
         String sNote;
-        //note = provider.getNote(id);
-        sNote = "<note id=\"" + id + "\"><title>Заголовок</title><content>"
-                + "<text>Бла бла бла. Контент заметки. Много много много много "
-                + "много много много теста. </text>"
-                + "<image>Images/testImage.jpg</image>"
-                + "<image>Images/photo1.jpg</image>"
-                + "<video>Images/testImage.jpg</video></content><date>"
-                + "31 фев 2010 23:57:34</date></note>";
+        sNote = provider.get("maxim/note/"+id, String.class);
         try {
             XMLParser parser = new XMLParser(sNote);
             String text = (String) parser.execute("/note/content/text",
@@ -246,7 +183,7 @@ public class Controller {
         }
         toSend += "</content><date>"+noteToSave.getDate()+"</date>" +
                 "</note>";
-    //    provider.createNote(toSend);
+        provider.post("maxim/note", toSend);
     }
 
     public void saveNote(Note noteToSave) {
@@ -277,11 +214,11 @@ public class Controller {
         toSend += "</content><date>"+noteToSave.getDate()+"</date>" +
                 "</note>";
         // ToDo: update note list
-    //    provider.updateNote(noteToSave.getId(), toSend);
+        provider.put("maxim/note/"+noteToSave.getId(), toSend);
     }
 
     public void deleteNote(int id) {
-    //    provider.deleteNote(id);
+        provider.delete("maxim/note/"+id);
     }
 
     public LinkedList<NoteListItem> getEventList() {
