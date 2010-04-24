@@ -1,28 +1,28 @@
 /***************************************************************************
  *
- *	Copyright 2010 Quicker Team
+ * Copyright 2010 Quicker Team
  *
- *	Quicker Team is:
- *		Kirdeev Andrey (kirduk@yandex.ru)
- * 	Koritniy Ilya (korizzz230@bk.ru)
- * 	Kolchin Maxim	(kolchinmax@gmail.com)
+ * Quicker Team is:
+ * Kirdeev Andrey (kirduk@yandex.ru)
+ * Koritniy Ilya (korizzz230@bk.ru)
+ * Kolchin Maxim (kolchinmax@gmail.com)
  */
 /****************************************************************************
  *
- *	This file is part of Quicker.
+ * This file is part of Quicker.
  *
- *	Quicker is free software: you can redistribute it and/or modify
- *	it under the terms of the GNU Lesser General Public License as published by
- *	the Free Software Foundation, either version 3 of the License, or
- *	(at your option) any later version.
+ * Quicker is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *	Quicker is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *	GNU Lesser General Public License for more details.
+ * Quicker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- *	You should have received a copy of the GNU Lesser General Public License
- *	along with Quicker. If not, see <http://www.gnu.org/licenses/>
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Quicker. If not, see <http://www.gnu.org/licenses/>
 
 
  ****************************************************************************/
@@ -44,26 +44,20 @@ import Quicker.NoteListItem;
 import Quicker.Constants;
 import Quicker.Media;
 import Quicker.noteWindow.NoteWindow;
-import javafx.scene.control.ProgressIndicator;
-import java.util.LinkedList;
-import Quicker.ScrollPane;
 import java.lang.Void;
+import java.util.LinkedList;
 
 public class NotesView extends View {
 
     var provider: Controller = Controller.getInstance();
     var notes: Node;
-    def prog = ProgressIndicator {
-                    progress: bind ProgressIndicator.computeProgress(100, 30)
-                };
-    var a: Node[] = prog;
-    var sc:Node[];
+    var a: Node[] = null;
 
-    override public function showInfo()                       {
-        if (a[0] != prog)
+    override public function showInfo()   {
+        if (a[0] != null)
             return;
         var theList: LinkedList;
-        var mes  ;
+        var mes ;
         var listener: NotesListener = NotesListener {
                         override public function post(list: LinkedList): Void {
                             java.lang.System.out.println("{list.size()}");
@@ -78,10 +72,10 @@ public class NotesView extends View {
         var task = ListTask {
                         listener: listener
                         onStart: function () {
-                            delete  a;
                             insert Text {content: "Loading..."} into a;
                         }
                         onDone: function () {
+
                             delete  a;
                             insert HBox {
                                 translateX: Constants.VIEWER_WIDTH - 30
@@ -96,12 +90,6 @@ public class NotesView extends View {
                                         }
                                     }
                                 ]
-                            } into a;
-                            insert ScrollPane {
-                                content: Group { content: bind sc }
-                                width: Constants.VIEWER_WIDTH;
-                                height: Constants.hIndent - 20;
-                                vertical: true;
                             } into a;
                             for (i in [0..<theList.size()]) { // ToDo: handle exception
                                 var item: NoteListItem = theList.get(i) as NoteListItem;
@@ -168,7 +156,7 @@ public class NotesView extends View {
                                         } // end HBox
                                     ] // end group content
                                 } // end droup
-                                into sc;
+                                into a;
                             } // end for
                         }
                     }

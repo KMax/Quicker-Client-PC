@@ -49,6 +49,8 @@ import javax.swing.filechooser.FileFilter;
 import javafx.scene.Node;
 import Quicker.Controller;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.Glow;
+import java.io.File;
 
 public class NoteWindow {
     var path: String = "/home/Maxim/Картинки/Webcam";   // PATH TO TEMPORARY FILES
@@ -95,33 +97,32 @@ public class NoteWindow {
 							}
                                              };
 
-    var mainIm: Image = Image {url: "{__DIR__}Images/mainB.PNG"};
+    var mainIm: Image = Image {url: "{__DIR__}Images/format.png"};
     var right: Image = Image {url: "{__DIR__}Images/right.PNG"};
     var left: Image = Image {url: "{__DIR__}Images/left.PNG"};
     var center: Image = Image {url: "{__DIR__}Images/center.PNG"};
-    var alAll: Image = Image {url: "{__DIR__}Images/alligmAll.PNG"};
+    var alAll: Image = Image {url: "{__DIR__}Images/justify.png"};
     var bold: Image = Image {url: "{__DIR__}Images/Bold.PNG"};
-    var I: Image = Image {url: "{__DIR__}Images/I.PNG"};
-    var under: Image = Image {url: "{__DIR__}Images/Underline.PNG"};
-    var closeButton: Image = Image { url: "{__DIR__}Images/closebutton.JPG" };
-    var closeButtonEntered: Image = Image { url: "{__DIR__}Images/buttoncloseEntered.JPG"};
-    var buttonBind: Image = Image { url: "{__DIR__}Images/buttonBind.bmp" };
-    var buttonBindEntered: Image = Image { url: "{__DIR__}Images/buttonBind2.bmp"};
+    var I: Image = Image {url: "{__DIR__}Images/italic.png"};
+    var under: Image = Image {url: "{__DIR__}Images/underlined.png"};
+    var closeButton: Image = Image { url: "{__DIR__}Images/close.png" };
+    var buttonBind: Image = Image { width: 19 height: 19 url: "{__DIR__}Images/stick_right.png" };
     var buttonDrag1: Image = Image{url: "{__DIR__}Images/Drag.PNG"};
-    var buttonSave: Image = Image { url: "{__DIR__}Images/buttonSave.bmp" };
-    var buttonSaveEntered: Image = Image { url: "{__DIR__}Images/buttonSave2.bmp"};
-    var buttonMedia: Image = Image { url: "{__DIR__}Images/buttonMedia.bmp" };
-    var buttonMediaEntered: Image = Image { url: "{__DIR__}Images/buttonMediaEntered.bmp"};
-    var buttonMedia2: Image = Image { url: "{__DIR__}Images/buttonMedia2.BMP" };
-    var buttonMediaEntered2: Image = Image { url: "{__DIR__}Images/buttonMediaEntered2.BMP"};
+    var buttonSave: Image = Image { url: "{__DIR__}Images/save.png" };
+    var buttonMedia: Image = Image { url: "{__DIR__}Images/arrow2.png" };
+    var buttonMedia2: Image = Image { url: "{__DIR__}Images/reversed.png" };
     var X: Float;
     var Y: Float;
+    var ok_ef = Glow { level: .3 }
+    var close_ef = Glow { level: .3 }
+    var stick_ef = Glow { level: .3 }
+    var media_ef = Glow { level: .3 }
 
     function PrepareToSave(): Void{
             var s:String = t.getText();
             var i1: Integer = s.indexOf("<body>");
             var i2: Integer = s.indexOf("</body>");
-            var sTemp: String = s.substring(i1+7, i2);
+            var sTemp: String = s.substring(i1+10, i2);
             i1 = sTemp.indexOf(0xA);
             if (i1== -1)
             {
@@ -161,16 +162,18 @@ public class NoteWindow {
 					jfc.showOpenDialog(null);
 					var dir = jfc.getSelectedFile().getAbsolutePath();
 					var src: FileInputStream = new FileInputStream(dir);
-					var dest: FileOutputStream = new FileOutputStream( "{path}{jfc.getSelectedFile().getName()}" );
+                                        var f: File = new File("");
+                                        java.lang.System.out.println(f.getAbsolutePath());
+					var dest: FileOutputStream = new FileOutputStream( "{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}" );
 					var srcChannel: FileChannel = src.getChannel();
 					var destChannel: FileChannel = dest.getChannel();
 					srcChannel.transferTo(0, srcChannel.size(), destChannel);
 					java.lang.System.out.println(jfc.getSelectedFile().getName());
 					//adding image into node to sending on server
-					note.addImage(jfc.getSelectedFile().getName());
+					note.addImage("{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}");
 					//adding image for media content
 					insert ImageView {
-								var im: Image= Image{url: "file:///{path}{jfc.getSelectedFile().getName()}"};
+								var im: Image= Image{url: "file:///{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}"};
 								image: im;
 								fitHeight: 40
 								fitWidth: 40
@@ -199,14 +202,23 @@ public class NoteWindow {
 
         window = Stage {
             title: title;
-            style: StageStyle.UNDECORATED
+            style: StageStyle.TRANSPARENT;
             width: 300;
             height: 400;
             scene: Scene {
-                fill: bind color
+                fill: null
                 content: [
                     Group {
                         content: [
+				Rectangle{
+                                        x:0;
+                                        y:0;
+                                        width: bind window.width;
+                                        height: bind window.height;
+                                        arcHeight:20
+                                        arcWidth:20
+                                        fill: color;
+                                        }		
                             t = TextArea {
                                 layoutX: 0
                                 layoutY: 24
@@ -372,11 +384,12 @@ public class NoteWindow {
 				    image: bind im;
 				    layoutX: bind window.width - 23;
 				    layoutY: 3;
+                                    effect: close_ef
 				    onMouseEntered: function (e) {
-					im = closeButtonEntered;
+					close_ef.level = .7
 				    }
 				    onMouseExited: function (e) {
-					im = closeButton;
+					close_ef.level = .3
 				    }
 				    onMouseClicked: function (e) {
 					window.close();
@@ -389,11 +402,12 @@ public class NoteWindow {
 				    image: bind im;
 				    layoutX: 3;
 				    layoutY: 3;
+                                    effect: stick_ef
 				    onMouseEntered: function (e) {
-					im = buttonBindEntered;
+					stick_ef.level = .7
 				    }
 				    onMouseExited: function (e) {
-					im = buttonBind;
+					stick_ef.level = .3
 				    }
 				    onMouseClicked: function (e) {
 				    }
@@ -421,11 +435,13 @@ public class NoteWindow {
 				    image: bind im;
 				    layoutX: 3;
 				    layoutY: bind window.height - 23;
+                                    effect: bind ok_ef
+                                    clip: Rectangle { height: 20 width: 20 }
 				    onMouseEntered: function(e){
-					im = buttonSaveEntered;
+					ok_ef.level = .7
 				    }
 				    onMouseExited: function(e){
-					im = buttonSave;
+					ok_ef.level = .3
 				    }
 				    onMouseClicked: function(e){
 					var c = Controller.getInstance();
@@ -443,6 +459,18 @@ public class NoteWindow {
 					c.saveNewNote(note)
 					else
 					c.saveNote(note);
+				/*	SavingTask {
+					    n: note
+					    onStart: function () {
+						// add Text { content: "Saving..." }
+					    }
+
+					    onDone: function () {
+						// remove text
+					    }
+
+					}.start()*/
+
 				    }
                             }
                             //Button for opening media content
@@ -452,11 +480,12 @@ public class NoteWindow {
 				    visible: bind butVis;
 				    layoutX: bind window.width / 2 - 27;
 				    layoutY: bind window.height - 23;
+                                    effect: media_ef
 				    onMouseEntered: function (e) {
-					im = buttonMediaEntered;
+					media_ef.level = .7
 				    }
 				    onMouseExited: function (e) {
-					im = buttonMedia;
+					media_ef.level = .3
 				    }
 				    onMouseClicked: function (e: MouseEvent) {
 					//needs upping TextArea
@@ -505,11 +534,12 @@ public class NoteWindow {
 				    visible: bind if (butVis) false else true;
 				    layoutX: bind window.width / 2 - 27;
 				    layoutY: bind window.height - 23;
+                                    effect: media_ef
 				    onMouseEntered: function (e) {
-					im = buttonMediaEntered2;
+					media_ef.level = .7
 				    }
 				    onMouseExited: function (e) {
-					im = buttonMedia2;
+					media_ef.level = .3
 				    }
 				    onMouseClicked: function (e) {
 					panel = 0;
