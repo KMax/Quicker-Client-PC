@@ -183,7 +183,7 @@ public class Controller {
         }
         toSend += "</content><date>"+noteToSave.getDate()+"</date>" +
                 "</note>";
-        provider.post("maxim/note", toSend);
+        provider.post("maxim/note", toSend, "application/xml");
     }
 
     public void saveNote(Note noteToSave) {
@@ -214,7 +214,7 @@ public class Controller {
         toSend += "</content><date>"+noteToSave.getDate()+"</date>" +
                 "</note>";
         // ToDo: update note list
-        provider.put("maxim/note/"+noteToSave.getId(), toSend);
+        provider.put("maxim/note/"+noteToSave.getId(), toSend, "application/xml");
     }
 
     public void deleteNote(int id) {
