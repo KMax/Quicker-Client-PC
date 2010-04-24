@@ -40,9 +40,4 @@ public class ListTask extends JavaTaskBase {
     override protected function create(): RunnableFuture {
 	peer = new ListRunnable(listener);
     }
-    
-    override function start() {
-	super.start();
-    }
-
 }
