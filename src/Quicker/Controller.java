@@ -183,7 +183,7 @@ public class Controller {
         }
         toSend += "</content><date>"+noteToSave.getDate()+"</date>" +
                 "</note>";
-        provider.post("maxim/note", toSend);
+        provider.post("maxim/note", String.class, toSend);
     }
 
     public void saveNote(Note noteToSave) {
