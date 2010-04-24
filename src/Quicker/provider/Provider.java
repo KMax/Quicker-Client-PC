@@ -32,7 +32,6 @@ import com.rsa.jsafe.provider.JsafeJCE;
 import com.rsa.jsafe.provider.SecureRandomEx;
 import com.rsa.jsse.JsseProvider;
 import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import java.io.File;
@@ -55,7 +54,6 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
-import javax.ws.rs.core.MediaType;
 
 /**
  *
@@ -167,24 +165,12 @@ public class Provider {
 		client.resource(serverURL.toString() + uri).delete();
 	}
 
-	public <T> void put(String uri, T t) {
-		WebResource r = client.resource(serverURL.toString() + uri);
-		r.header("Content-Type", "application/xml");
-		r.accept("application/xml");
-		r.entity(t, MediaType.APPLICATION_XML);
+	public void put(String uri, Object t) {
+		client.resource(serverURL.toString() + uri).put(t);
 	}
 
-	/**
-	 * 
-	 * @param <T>
-	 * @param uri
-	 * @param c
-	 * @param t
-	 */
-	public <T> void post(String uri, Class<T> c,Object t) {
-		WebResource r = client.resource(serverURL.toString() + uri);
-		r.header("Content-Type", "application/xml");
-		r.post(t);
+	public void post(String uri, Object t) {
+		client.resource(serverURL.toString() + uri).post(t);
 	}
 
 	/**

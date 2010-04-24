@@ -48,10 +48,10 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javafx.scene.Node;
 import Quicker.Controller;
-import javafx.scene.effect.*;
-import java.io.File;
+import javafx.scene.effect.GaussianBlur;
 
-public class NoteWindow {   
+public class NoteWindow {
+    var path: String = "/home/Maxim/Картинки/Webcam";   // PATH TO TEMPORARY FILES
     public var note: Note;
     var title: String = note.getTitle();
     var sp: ScrollPane;
@@ -161,18 +161,16 @@ public class NoteWindow {
 					jfc.showOpenDialog(null);
 					var dir = jfc.getSelectedFile().getAbsolutePath();
 					var src: FileInputStream = new FileInputStream(dir);
-                                        var f: File = new File("");
-                                        java.lang.System.out.println(f.getAbsolutePath());
-					var dest: FileOutputStream = new FileOutputStream( "{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}" );
+					var dest: FileOutputStream = new FileOutputStream( "{path}{jfc.getSelectedFile().getName()}" );
 					var srcChannel: FileChannel = src.getChannel();
 					var destChannel: FileChannel = dest.getChannel();
 					srcChannel.transferTo(0, srcChannel.size(), destChannel);
 					java.lang.System.out.println(jfc.getSelectedFile().getName());
 					//adding image into node to sending on server
-					note.addImage("{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}");
+					note.addImage(jfc.getSelectedFile().getName());
 					//adding image for media content
 					insert ImageView {
-								var im: Image= Image{url: "file:///{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}"};
+								var im: Image= Image{url: "file:///{path}{jfc.getSelectedFile().getName()}"};
 								image: im;
 								fitHeight: 40
 								fitWidth: 40
@@ -201,24 +199,14 @@ public class NoteWindow {
 
         window = Stage {
             title: title;
-            style: StageStyle.TRANSPARENT;
+            style: StageStyle.UNDECORATED
             width: 300;
             height: 400;
             scene: Scene {
-                fill: null
+                fill: bind color
                 content: [
-                        Rectangle{
-                                        x:0;
-                                        y:0;
-                                        width: bind window.width;
-                                        height: bind window.height;
-                                        arcHeight:20
-                                        arcWidth:20
-                                        fill: color;
-                                        }
                     Group {
                         content: [
-                                
                             t = TextArea {
                                 layoutX: 0
                                 layoutY: 24
@@ -263,7 +251,7 @@ public class NoteWindow {
                             //Button for showing editable buttons (modify text)
                             ImageView {
                                 image: mainIm;
-                                layoutX: 27
+                                layoutX: 25
                                 layoutY: 3
                                 onMouseClicked: function (e) {
                                     butVis2 = not butVis2;
@@ -399,7 +387,7 @@ public class NoteWindow {
                             ImageView {
 				    var im = buttonBind;
 				    image: bind im;
-				    layoutX: 5;
+				    layoutX: 3;
 				    layoutY: 3;
 				    onMouseEntered: function (e) {
 					im = buttonBindEntered;
@@ -412,13 +400,12 @@ public class NoteWindow {
                             }
                             //Button Drag
                             ImageView {
-                                        var im = buttonBind;
+                                        var im = buttonDrag1;
 					image: bind im;
 					layoutX: bind window.width - 11;
 					layoutY: bind window.height - 11;
                                         var x1;
                                         var y1;
-                                        blocksMouse: true
                                         onMouseDragged: function(e){
                                                 x1 = e.dragX;
                                                 y1 = e.dragY;
@@ -432,7 +419,7 @@ public class NoteWindow {
                             ImageView {
 				    var im = buttonSave;
 				    image: bind im;
-				    layoutX: 5;
+				    layoutX: 3;
 				    layoutY: bind window.height - 23;
 				    onMouseEntered: function(e){
 					im = buttonSaveEntered;
@@ -501,7 +488,7 @@ public class NoteWindow {
 							spacing: 10
 							height: 70
 							content: bind hbx
-							width: bind (sizeof(hbx)*50-35);
+							width: bind (sizeof(hbx)*50-39);
 							    };
 						       }
 						    ]
