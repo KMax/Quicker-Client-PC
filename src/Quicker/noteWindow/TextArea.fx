@@ -55,34 +55,29 @@ public class TextArea extends SwingComponent {
                 editorPane.setEditable(editable);
             };
     public var onKeyUp: function(  keyEvent: java.awt.event.KeyEvent);
-             function updateComponentField(){
-                        updateComponentFlag = true;
-        text= editorPane.getText();
-            updateComponentFlag = false;
-                }
-    public  function getText(): String {
+    function updateComponentField(){
+		updateComponentFlag = true;
+		text = editorPane.getText();
+		updateComponentFlag = false;
+    }
+    public function getText(): String {
         return editorPane.getText();
-	}
+    }
     override  function createJComponent(): JComponent {
          editorPane =new JEditorPane();
             editorPane.setEditorKit(new HTMLEditorKit());
-            editorPane.setContentType("text/html; charset=utf-8");
+            editorPane.setContentType("text/html");
             editorPane.setDragEnabled(true);
             editorPane.setDoubleBuffered(true);
             editorPane.setEditable(editable );
             editorPane.setBackground(Color.decode("#FFFFFF"));
+	    editorPane.setText(text);
         var keyListener: KeyAdapter = KeyAdapter{
-    override function keyReleased(e: java.awt.event.KeyEvent) {
+	override function keyReleased(e: java.awt.event.KeyEvent) {
                 updateComponentField();
                 if(onKeyUp != null){onKeyUp(e ); }
             }
-    override function keyPressed(e){
-
-            }
         };
-
-
-
         editorPane.addKeyListener( keyListener );
         var scrollPane = new JScrollPane(editorPane,
 	JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,

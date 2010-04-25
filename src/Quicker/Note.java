@@ -74,7 +74,24 @@ public class Note {
     }
 
     public String getText() {
-        return text;
+		String sNote = text;
+	//	int i1 = sNote.indexOf("<![CDATA[");
+	//	int i2 = sNote.indexOf("]]>");
+	//	char[] sTemp = sNote.substring(i1 + 9, i2).toCharArray();
+		char[] sTemp = sNote.toCharArray();
+		StringBuilder SB = new StringBuilder();
+		int it = 0;
+		while (it < sTemp.length) {
+			if (sTemp[it] == 0xA) {
+				SB.append("<br>");
+			} else if (sTemp[it] == 0x20) {
+				SB.append("&nbsp;");
+			} else {
+				SB.append(sTemp[it]);
+			}
+			it++;
+		}
+        return SB.toString();
     }
 
     public String getTitle() {

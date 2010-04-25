@@ -52,13 +52,14 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
 import java.io.File;
 import java.lang.Boolean;
-import javafx.animation.transition.FadeTransition;
 import javafx.scene.text.Text;
-import javafx.animation.Interpolator;
+import java.lang.Void;
+import javafx.scene.control.TextBox;
+import javafx.scene.text.Font;
+import javafx.scene.Cursor;
+import java.lang.StringBuilder;
 
 public class NoteWindow {
-
-    var path: String = "";   // PATH TO TEMPORARY FILES
     public var note: Note;
     var title: String = note.getTitle();
     var sp: ScrollPane;
@@ -77,18 +78,7 @@ public class NoteWindow {
     //setup for media content (showing)
     var hbx: Node[] = for (i in testMedia) {
                     ImageView {
-                                var im: Image
-
-
-
-
-
-
-
-
-
-
-      = Image {url: "{__DIR__}{i}"};
+                                var im: Image = Image {url: "{__DIR__}{i}"};
 							    image: im;
 							    fitHeight: 40
 							    fitWidth: 40
@@ -132,12 +122,12 @@ public class NoteWindow {
     var close_ef = Glow {level: .3}
     var stick_ef = Glow {level: .3}
     var media_ef = Glow {level: .3}
+    var te: TextBox;
 
     var button: Node = bind saveButtonArea;
     var saveButtonArea: Node = null;
+    
     var changed: Boolean = false on replace {
-            java.lang.System.out.println("on replace: {changed}");
-        if (not changed) saveButtonArea = Text { content: "?"}
         if (changed) saveButtonArea = Group {
 				layoutX: 3;
 				layoutY: bind window.height - 23;
@@ -154,7 +144,7 @@ public class NoteWindow {
                                     }
                                 ]
                                 onMouseEntered: function(e){
-                                    ok_ef.level = .7
+                                    ok_ef.level = 1
 				}
 				onMouseExited: function(e){
                                     ok_ef.level = .3
@@ -162,63 +152,82 @@ public class NoteWindow {
 				onMouseClicked: function(e){
                                         var c = Controller.getInstance();
                                         //if not empty TextArea
-					if(t.getText() != ""){
-					PrepareToSave();
-					note.setText(noteText);
-					note.setTitle(title);
+					if(not t.getText().equals("")){
+					 //   PrepareToSave();
+					    note.setText(noteText);
+					    note.setTitle(te.text);
+					    java.lang.System.out.println(noteText);
 					}else{
-						note.setText("");
-						note.setTitle("");
+					    note.setText("your text");
+					    note.setTitle("your title");
 					}
 					//if it is new note
-					if(note.getId() == 0)
-					c.saveNewNote(note)
-					else
-					c.saveNote(note);
-                                        var saveResult: Boolean;
+					var saveResult: Boolean;
                                         var listener = SaveListener {
                                            override public function returnResult (res : Boolean) : Void {
                                                saveResult = res;
                                            }
                                         }
-					SavingTask {
+					var stask = SavingTask {
 					    n: note
+					    add: (note.getId() == 0)
                                             listener: listener;
 					    onStart: function () {
-						saveButtonArea = Text { content: "Saving..." }
+						    java.lang.System.out.println("Started");
+						java.lang.System.out.println("{saveButtonArea}");
+						saveButtonArea = Text { fill: Color.RED font: Font{size:20} content: "AAAA!!! Saving..." }
+						java.lang.System.out.println("{saveButtonArea}");
 					    }
 					    onDone: function () {
+						    java.lang.System.out.println("Finished");
                                                 changed = false;
-                                                var okText = Text { content: "Saved..." }
-                                                saveButtonArea = okText;
-                                                FadeTransition {
-                                                    node: okText;
-                                                    toValue: 0
-                                                    framerate: 18
-                                                    duration: 1.5s
-                                                    repeatCount: 1
-                                                    interpolator: Interpolator.LINEAR
-                                                }.playFromStart();
+                                                saveButtonArea = Text { content: "Saved..." }
+						java.lang.System.out.println("{saveButtonArea}");
+                                                
                                             }
-                                        }.start()
+                                        }
+					stask.start();
                                 }
-                            }
+                            } else saveButtonArea = Text {content: "qwetyuio"}
     }
 
 
-    function PrepareToSave(): Void {
-        var s: String = t.getText();
-        var i1: Integer = s.indexOf("<body>");
-        var i2: Integer = s.indexOf("</body>");
-        var sTemp: String = s.substring(i1 + 10, i2);
-        i1 = sTemp.indexOf(0xA);
-        if (i1 == -1) {
-            title = sTemp;
-            noteText = "";
-            return ;
-        }
-        title = sTemp.substring(1, i1);
-        noteText = sTemp.substring(i1, sTemp.length() - 1);
+   function PrepareToSave(): Void{
+            var s:String = t.getText();
+            var i1: Integer = s.indexOf("<body>");
+            var i2: Integer = s.indexOf("</body>");
+            var c1: Character[] = "<br>".toCharArray();
+            var c2: Character[] = "&nbsp".toCharArray();
+            var sTemp: Character[] = s.substring(i1+10, i2).toCharArray();
+            var SB: StringBuilder  = new StringBuilder();
+            var i: Integer = 0;
+            var tu: Boolean= false;
+            while(i < sizeof(sTemp)){
+                    if(sTemp[i] == c1[0])
+                            if(sTemp[i+1] == c1[1])
+                               if (sTemp[i+2] == c1[2])
+                                   if (sTemp[i+3] == c1[3]){
+                                         SB.append("0x3");
+                                         i+=4;
+                                         tu = true;
+                                       }
+                    if(sTemp[i] == c2[0])
+                                    if(sTemp[i+1] == c2[1])
+                                         if(sTemp[i+2] == c2[2])
+                                             if(sTemp[i+3] == c2[3])
+                                                if(sTemp[i+4] == c2[4]){
+                                                     SB.append(" ");
+                                                     i+=5;
+                                                     tu = true;
+                                                }
+                    if(tu){
+                        tu=false;
+                    }else{
+                        SB.append(sTemp[i]);
+                        i++;
+                    }
+       }
+           noteText = SB.toString();
     };
 
     public function create(): Stage {
@@ -286,6 +295,7 @@ public class NoteWindow {
 				    }
 				}
 			    } before hbx[0];
+	java.lang.System.out.println(note.getText());
 
         window = Stage {
             title: title;
@@ -296,10 +306,10 @@ public class NoteWindow {
                 fill: null
                 content: [
                     Group {
-                onMouseClicked: function (e: MouseEvent) {
-                     changed = true
-                }
-                        content: [
+			onMouseClicked: function (e: MouseEvent) {
+			    changed = true
+			}
+                        content: bind [
 				Rectangle{
                                         x:0;
                                         y:0;
@@ -308,14 +318,28 @@ public class NoteWindow {
                                         arcHeight:20
                                         arcWidth:20
                                         fill: color;
-                                        }		
+                                        },
+                            te = TextBox {
+                                        text: title;
+                                        columns: 12;
+                                        style: "border-width:-1;"
+                                        font: Font{
+                                                size: 12
+                                                }
+                                        layoutX:2;
+                                        layoutY:24
+                                        width: bind window.width-4;
+                                        height: 20;
+
+                                    }
                             t = TextArea {
-                                layoutX: 0
-                                layoutY: 24
-                                width: bind window.width;
-                                height: bind window.height - 50 - panel;
-                                text: "{title} {noteText}";
-                            },
+                                        layoutX: 0
+                                        layoutY: 54
+					cursor: Cursor.TEXT
+                                        width: bind window.width;
+                                        height: bind window.height - 80 - panel;
+                                        text: noteText;
+                                         },
                             //Button for changing window size
                             ImageView {
                                 var im: Image = Image{url: "{ __DIR__  }Images/Drag.PNG"};
@@ -476,7 +500,7 @@ public class NoteWindow {
 				    layoutY: 3;
                                     effect: close_ef
 				    onMouseEntered: function (e) {
-					close_ef.level = .7
+					close_ef.level = 1
 				    }
 				    onMouseExited: function (e) {
 					close_ef.level = .3
@@ -494,7 +518,7 @@ public class NoteWindow {
 				    layoutY: 3;
                                     effect: stick_ef
 				    onMouseEntered: function (e) {
-					stick_ef.level = .7
+					stick_ef.level = 1
 				    }
 				    onMouseExited: function (e) {
 					stick_ef.level = .3
@@ -522,15 +546,20 @@ public class NoteWindow {
                             //Button Save
                             button,
                             //Button for opening media content
-                            ImageView {
-                                var im = buttonMedia;
-                                image: bind  im;
-                                visible:   bind butVis  ;
-                                layoutX:   bind window.width                   / 2  -27;
-                                layoutY:   bind window.height - 23;
-                                effect:  media_ef
+			    Group {
+				content: [
+				    Rectangle { width: 45 height: 12 fill: Color.TRANSPARENT }
+				    ImageView {
+					var im = buttonMedia;
+					image: bind  im;
+					visible: bind butVis;
+				    }
+				]
+				layoutX: bind window.width / 2  -27;
+				layoutY: bind window.height - 23;
+				effect:  media_ef
                                 onMouseEntered: function (e) {
-                                    media_ef.level = .7
+                                    media_ef.level = 1
                                 }
                                 onMouseExited: function (e) {
                                     media_ef.level = .3
@@ -574,7 +603,9 @@ public class NoteWindow {
 						check = false;
 						}
 					    }
-                            },
+			    }
+
+                            ,
                             //Button for closing media
                             ImageView {
 				    var im = buttonMedia2;
@@ -584,7 +615,7 @@ public class NoteWindow {
 				    layoutY: bind window.height - 23;
                                     effect: media_ef
 				    onMouseEntered: function (e) {
-					media_ef.level = .7
+					media_ef.level = 1
 				    }
 				    onMouseExited: function (e) {
 					media_ef.level = .3

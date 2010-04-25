@@ -10,26 +10,38 @@ import javafx.async.RunnableFuture;
  * @author Maxim
  */
 public class GoSave implements RunnableFuture {
+
 	private Controller provider;
 	private Note note;
-        private SaveListener listener;
-	public GoSave(Note n, SaveListener l) {
+	private SaveListener listener;
+	private Boolean add;
+
+	public GoSave(Note n, SaveListener l, Boolean add) {
 		provider = Controller.getInstance();
 		note = n;
-                listener = l;
+		listener = l;
+		this.add = add;
 	}
+
 	@Override
 	public void run() throws Exception {
-		provider.saveNote(note);
-
+		System.out.println("inside run");
+		if (!add) {
+			returnResult(provider.saveNote(note));
+			System.out.println("saved");
+		} else {
+			returnResult(provider.saveNewNote(note));
+			System.out.println("added");
+		}
 	}
-        private void returnResult() {
-            Entry.deferAction(new Runnable() {
-            @Override
-                public void run() {
-                    listener.returnResult(true);
-                }
-            });
-        }
 
+	private void returnResult(final Boolean result) {
+		Entry.deferAction(new Runnable() {
+
+			@Override
+			public void run() {
+				listener.returnResult(result);
+			}
+		});
+	}
 }

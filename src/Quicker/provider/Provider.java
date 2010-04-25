@@ -32,6 +32,7 @@ import com.rsa.jsafe.provider.JsafeJCE;
 import com.rsa.jsafe.provider.SecureRandomEx;
 import com.rsa.jsse.JsseProvider;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
@@ -55,7 +56,6 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
-import javax.ws.rs.core.MediaType;
 
 /**
  *

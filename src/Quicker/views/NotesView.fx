@@ -46,6 +46,7 @@ import Quicker.Media;
 import Quicker.noteWindow.NoteWindow;
 import java.lang.Void;
 import java.util.LinkedList;
+import javafx.scene.Cursor;
 
 public class NotesView extends View {
 
@@ -103,6 +104,7 @@ public class NotesView extends View {
                                 java.lang.System.out.println("{item.getNoteID()}");
                                 insert Group {
                                     cache: true
+				    cursor: Cursor.HAND
                                     content: [
                                         Rectangle {
                                             id: "{item.getNoteID()}"

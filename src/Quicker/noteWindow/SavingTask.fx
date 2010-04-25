@@ -6,8 +6,9 @@ import Quicker.Note;
 
 public class SavingTask extends JavaTaskBase {
     public var n: Note;
+    public var add: Boolean;
     public var listener: SaveListener;
     override protected function create () : RunnableFuture {
-        new GoSave(n, listener);
+        new GoSave(n, listener, add);
     }
 }
