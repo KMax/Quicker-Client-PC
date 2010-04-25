@@ -153,7 +153,7 @@ public class NoteWindow {
                                         var c = Controller.getInstance();
                                         //if not empty TextArea
 					if(not t.getText().equals("")){
-					 //   PrepareToSave();
+					    PrepareToSave();
 					    note.setText(noteText);
 					    note.setTitle(te.text);
 					    java.lang.System.out.println(noteText);

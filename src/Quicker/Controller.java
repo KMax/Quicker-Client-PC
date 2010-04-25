@@ -167,7 +167,7 @@ public class Controller {
 		String toSend = "<note>"
 				+ "<title>" + noteToSave.getTitle() + "</title>"
 				+ "<content>"
-				+ "<text><![CDATA[" + noteToSave.getText() + "]]></text>";
+				+ "<text><![CDATA[" + noteToSave.getRawText() + "]]></text>";
 		LinkedList<String> imgs = noteToSave.getImages();
 		if (imgs.size() > 0) {
 			for (String img : imgs) {
@@ -203,23 +203,23 @@ public class Controller {
 				+ "<id>" + noteToSave.getId() + "</id>"
 				+ "<title>" + noteToSave.getTitle() + "</title>"
 				+ "<content>"
-				+ "<text><![CDATA[" + noteToSave.getText() + "]]></text>";
+				+ "<text><![CDATA[" + noteToSave.getRawText() + "]]></text>";
 		LinkedList<String> imgs = noteToSave.getImages();
 		if (imgs.size() > 0) {
 			for (String img : imgs) {
-				toSend += "<image>" + img + "</image>";
+				toSend += "<entity name='" + img + "' type='image'/>";
 			}
 		}
 		LinkedList<String> vids = noteToSave.getVideos();
 		if (vids.size() > 0) {
 			for (String vid : vids) {
-				toSend += "<image>" + vid + "</image>";
+				toSend += "<entity name='" + vid + "' type='video'/>";
 			}
 		}
 		LinkedList<String> auds = noteToSave.getAudios();
 		if (auds.size() > 0) {
 			for (String a : imgs) {
-				toSend += "<image>" + a + "</image>";
+				toSend += "<entity name='" + a + "' type='audio'/>";
 			}
 		}
 		toSend += "</content><date>" + noteToSave.getDate() + "</date>"

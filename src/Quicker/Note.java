@@ -94,6 +94,10 @@ public class Note {
         return SB.toString();
     }
 
+    public String getRawText() {
+        return text;
+    }
+
     public String getTitle() {
         return title;
     }
