@@ -45,12 +45,9 @@ public class ListRunnable implements RunnableFuture {
 
 	@Override
 	public void run() throws Exception {
-		postMessage("Inside run()");
 		list = Controller.getInstance().getNoteList();
 		postResult();
 	}
-
-
 	public void postMessage(final String msg) {
 		Entry.deferAction(new Runnable() {
 

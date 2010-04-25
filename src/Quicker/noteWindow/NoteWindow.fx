@@ -1,30 +1,30 @@
 /***************************************************************************
-*
-*   Copyright 2010 Quicker Team
-*
-*   Quicker Team is:
-*   Kirdeev Andrey (kirduk@yandex.ru)
-*   Koritniy Ilya  (korizzz230@bk.ru)
-*   Kolchin Maxim  (kolchinmax@gmail.com)
-*/
+ *
+ *   Copyright 2010 Quicker Team
+ *
+ *   Quicker Team is:
+ *   Kirdeev Andrey (kirduk@yandex.ru)
+ *   Koritniy Ilya  (korizzz230@bk.ru)
+ *   Kolchin Maxim  (kolchinmax@gmail.com)
+ */
 /****************************************************************************
-*
-*   This file is part of Quicker.
-*
-*   Quicker is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU Lesser General Public License as published
-*   by the Free Software Foundation, either version 3 of the License, or
-*   (at your option) any later version.
-*
-*   Quicker is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*   GNU Lesser General Public License for more details.
-*
-*   You should have received a copy of the GNU Lesser General Public License
-*   along with Quicker. If not, see <http://www.gnu.org/licenses/>
-*
-****************************************************************************/
+ *
+ *   This file is part of Quicker.
+ *
+ *   Quicker is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Quicker is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Quicker. If not, see <http://www.gnu.org/licenses/>
+ *
+ ****************************************************************************/
 package Quicker.noteWindow;
 
 import javafx.stage.Stage;
@@ -51,9 +51,14 @@ import Quicker.Controller;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
 import java.io.File;
+import java.lang.Boolean;
+import javafx.animation.transition.FadeTransition;
+import javafx.scene.text.Text;
+import javafx.animation.Interpolator;
 
 public class NoteWindow {
-    var path: String = "/home/Maxim/Картинки/Webcam";   // PATH TO TEMPORARY FILES
+
+    var path: String = "";   // PATH TO TEMPORARY FILES
     public var note: Note;
     var title: String = note.getTitle();
     var sp: ScrollPane;
@@ -64,16 +69,26 @@ public class NoteWindow {
     protected var check: Boolean = true;
     protected var butVis: Boolean = true;
     protected var butVis2: Boolean = false;
-    protected var group;
+    protected var group  ;
     var visPicker: Boolean = false;
     var t: TextArea;
     var colorPicker: ColorPicker;
     protected var testMedia = note.getImages();
-
     //setup for media content (showing)
-    var hbx:Node[] =  for (i in testMedia) {
-					    ImageView {
-						  var im: Image= Image{url:"{__DIR__}{i}"};
+    var hbx: Node[] = for (i in testMedia) {
+                    ImageView {
+                                var im: Image
+
+
+
+
+
+
+
+
+
+
+      = Image {url: "{__DIR__}{i}"};
 							    image: im;
 							    fitHeight: 40
 							    fitWidth: 40
@@ -105,94 +120,166 @@ public class NoteWindow {
     var bold: Image = Image {url: "{__DIR__}Images/Bold.PNG"};
     var I: Image = Image {url: "{__DIR__}Images/italic.png"};
     var under: Image = Image {url: "{__DIR__}Images/underlined.png"};
-    var closeButton: Image = Image { url: "{__DIR__}Images/close.png" };
-    var buttonBind: Image = Image { width: 19 height: 19 url: "{__DIR__}Images/stick_right.png" };
-    var buttonDrag1: Image = Image{url: "{__DIR__}Images/Drag.PNG"};
-    var buttonSave: Image = Image { url: "{__DIR__}Images/save.png" };
-    var buttonMedia: Image = Image { url: "{__DIR__}Images/arrow2.png" };
-    var buttonMedia2: Image = Image { url: "{__DIR__}Images/reversed.png" };
+    var closeButton: Image = Image {url: "{__DIR__}Images/close.png"};
+    var buttonBind: Image = Image {width: 19 height: 19 url: "{__DIR__}Images/stick_right.png"};
+    var buttonDrag1: Image = Image {url: "{__DIR__}Images/Drag.PNG"};
+    var buttonSave: Image = Image {url: "{__DIR__}Images/save.png"};
+    var buttonMedia: Image = Image {url: "{__DIR__}Images/arrow2.png"};
+    var buttonMedia2: Image = Image {url: "{__DIR__}Images/reversed.png"};
     var X: Float;
     var Y: Float;
-    var ok_ef = Glow { level: .3 }
-    var close_ef = Glow { level: .3 }
-    var stick_ef = Glow { level: .3 }
-    var media_ef = Glow { level: .3 }
+    var ok_ef = Glow {level: .3}
+    var close_ef = Glow {level: .3}
+    var stick_ef = Glow {level: .3}
+    var media_ef = Glow {level: .3}
 
-    function PrepareToSave(): Void{
-            var s:String = t.getText();
-            var i1: Integer = s.indexOf("<body>");
-            var i2: Integer = s.indexOf("</body>");
-            var sTemp: String = s.substring(i1+10, i2);
-            i1 = sTemp.indexOf(0xA);
-            if (i1== -1)
-            {
-                    title = sTemp;
-                    noteText = "";
-                    return;
-                    }
-            title = sTemp.substring(1,i1);
-            noteText = sTemp.substring(i1, sTemp.length()-1);
+    var button: Node = bind saveButtonArea;
+    var saveButtonArea: Node = null;
+    var changed: Boolean = false on replace {
+            java.lang.System.out.println("on replace: {changed}");
+        if (not changed) saveButtonArea = Text { content: "?"}
+        if (changed) saveButtonArea = Group {
+				layoutX: 3;
+				layoutY: bind window.height - 23;
+                                content: [
+                                    Rectangle {
+                                        fill: Color.TRANSPARENT
+                                        height: 20
+                                        width: 20
+                                    }
+                                    ImageView {
+                                        var im = buttonSave;
+                                        image: bind im;
+                                        effect: bind ok_ef
+                                    }
+                                ]
+                                onMouseEntered: function(e){
+                                    ok_ef.level = .7
+				}
+				onMouseExited: function(e){
+                                    ok_ef.level = .3
+				}
+				onMouseClicked: function(e){
+                                        var c = Controller.getInstance();
+                                        //if not empty TextArea
+					if(t.getText() != ""){
+					PrepareToSave();
+					note.setText(noteText);
+					note.setTitle(title);
+					}else{
+						note.setText("");
+						note.setTitle("");
+					}
+					//if it is new note
+					if(note.getId() == 0)
+					c.saveNewNote(note)
+					else
+					c.saveNote(note);
+                                        var saveResult: Boolean;
+                                        var listener = SaveListener {
+                                           override public function returnResult (res : Boolean) : Void {
+                                               saveResult = res;
+                                           }
+                                        }
+					SavingTask {
+					    n: note
+                                            listener: listener;
+					    onStart: function () {
+						saveButtonArea = Text { content: "Saving..." }
+					    }
+					    onDone: function () {
+                                                changed = false;
+                                                var okText = Text { content: "Saved..." }
+                                                saveButtonArea = okText;
+                                                FadeTransition {
+                                                    node: okText;
+                                                    toValue: 0
+                                                    framerate: 18
+                                                    duration: 1.5s
+                                                    repeatCount: 1
+                                                    interpolator: Interpolator.LINEAR
+                                                }.playFromStart();
+                                            }
+                                        }.start()
+                                }
+                            }
+    }
+
+
+    function PrepareToSave(): Void {
+        var s: String = t.getText();
+        var i1: Integer = s.indexOf("<body>");
+        var i2: Integer = s.indexOf("</body>");
+        var sTemp: String = s.substring(i1 + 10, i2);
+        i1 = sTemp.indexOf(0xA);
+        if (i1 == -1) {
+            title = sTemp;
+            noteText = "";
+            return ;
+        }
+        title = sTemp.substring(1, i1);
+        noteText = sTemp.substring(i1, sTemp.length() - 1);
     };
 
     public function create(): Stage {
         //insert add button for media content
         insert ImageView {
-				image: Image {url: "{__DIR__}Images/addBtn.png"};
-				onMouseClicked: function (e) {
-				    try {
-					var jfc = new JFileChooser();
-					def extensions = [".jpg", ".PNG", ".png", ".JPEG"];  // TODO a lot of types
-					jfc.addChoosableFileFilter(
-					FileFilter {
-					    override function getDescription() {
-						"Images {extensions.toString()}"
-					    }
-					    override function accept(file) {
-						if (file.isDirectory())
-						    return true;
-						def name = file.getName().toLowerCase();
-						for (extension in extensions)
-						    if (name.endsWith(extension))
-							return true;
-						return false
-					    }
-					});
+            image: Image {url: "{__DIR__}Images/addBtn.png"};
+            onMouseClicked: function (e) {
+                try {
+                    var jfc = new JFileChooser();
+                    def extensions = [".jpg", ".PNG", ".png", ".JPEG"];  // TODO a lot of types
+                    jfc.addChoosableFileFilter(
+                    FileFilter {
+                        override function getDescription() {
+                            "Images {extensions.toString()}"
+                        }
+                        override function accept(file) {
+                            if (file.isDirectory())
+                                return true;
+                            def name = file.getName().toLowerCase();
+                            for (extension in extensions)
+                                if (name.endsWith(extension))
+                                    return true;
+                            return false
+                        }
+                    });
 
-					//Copying file to temporary folder
-					jfc.showOpenDialog(null);
-					var dir = jfc.getSelectedFile().getAbsolutePath();
-					var src: FileInputStream = new FileInputStream(dir);
-                                        var f: File = new File("");
-                                        java.lang.System.out.println(f.getAbsolutePath());
-					var dest: FileOutputStream = new FileOutputStream( "{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}" );
-					var srcChannel: FileChannel = src.getChannel();
-					var destChannel: FileChannel = dest.getChannel();
-					srcChannel.transferTo(0, srcChannel.size(), destChannel);
-					java.lang.System.out.println(jfc.getSelectedFile().getName());
-					//adding image into node to sending on server
-					note.addImage("{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}");
-					//adding image for media content
-					insert ImageView {
-								var im: Image= Image{url: "file:///{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}"};
-								image: im;
-								fitHeight: 40
-								fitWidth: 40
-								onMousePressed: function (ev: MouseEvent) {
-								    //deleting image
-								    if (ev.secondaryButtonDown) {
-									if (javafx.stage.Alert.confirm("Warning", "You realy want delete it?")) {
-										delete ev.node
-										from hbx;
-										note.removeImage(jfc.getSelectedFile().getName());
-									}
-									} else {
-									showingWindow {
-									    h: im.height;
-									    w: im.width;
-									    i: im;
-									};
-									}
-								    }
+                    //Copying file to temporary folder
+                    jfc.showOpenDialog(null);
+                    var dir = jfc.getSelectedFile().getAbsolutePath();
+                    var src: FileInputStream = new FileInputStream(dir);
+                    var f: File = new File("");
+                    java.lang.System.out.println(f.getAbsolutePath());
+                    var dest: FileOutputStream = new FileOutputStream("{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}");
+                    var srcChannel: FileChannel = src.getChannel();
+                    var destChannel: FileChannel = dest.getChannel();
+                    srcChannel.transferTo(0, srcChannel.size(), destChannel);
+                    java.lang.System.out.println(jfc.getSelectedFile().getName());
+                    //adding image into node to sending on server
+                    note.addImage("{f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}");
+                    //adding image for media content
+                    insert ImageView {
+                                var im: Image = Image {url: "file:///{ f.getAbsolutePath()}/{jfc.getSelectedFile().getName()}"};
+							image: im;
+							fitHeight: 40
+							fitWidth: 40
+							onMousePressed: function (ev: MouseEvent) {
+							 //deleting image
+                                                            if (ev.secondaryButtonDown) {
+                                                                if (javafx.stage.Alert.confirm("Warning", "You realy want delete it?")) {
+                                                                    delete ev.node
+                                                                    from hbx;
+                                                                    note.removeImage(jfc.getSelectedFile().getName());
+                                                                }
+                                                            } else {
+                                                                showingWindow {
+                                                                    h: im.height;
+                                                                    w: im.width;
+                                                                    i: im;
+                                                                };
+                                                            }
+							}
 							    }before hbx[1];
 				    } catch (ex) {
 					    java.lang.System.out.println(ex);
@@ -209,6 +296,9 @@ public class NoteWindow {
                 fill: null
                 content: [
                     Group {
+                onMouseClicked: function (e: MouseEvent) {
+                     changed = true
+                }
                         content: [
 				Rectangle{
                                         x:0;
@@ -228,26 +318,26 @@ public class NoteWindow {
                             },
                             //Button for changing window size
                             ImageView {
-                                        var im:  Image = Image {url: "{__DIR__}Images/Drag.PNG"};
-					image: bind im;
-					layoutX: bind window.width - 11;
-					layoutY: bind window.height - 11;
-                                        var x1;
-                                        var y1;
-                                        onMouseDragged: function(e){
-                                                x1 = e.dragX;
-                                                y1 = e.dragY;
-                                        }
-					onMouseReleased: function(e){
-						window.width= window.width+x1;
-						window.height = window.height+y1;
-					}
+                                var im: Image = Image{url: "{ __DIR__  }Images/Drag.PNG"};
+                                image: bind im;
+                                layoutX: bind  window.width - 11   ;
+                                layoutY:bind window.height - 11;
+                                var x1;
+                                var y1;
+                                onMouseDragged: function (e) {
+                                    x1 = e.dragX;
+                                    y1 = e.dragY;
+                                }
+                                onMouseReleased: function (e) {
+                                    window.width = window.width + x1;
+                                    window.height = window.height + y1;
+                                }
                             },
                             //This node need's for drag the window
                             Rectangle {
                                 layoutX: 30
                                 layoutY: 0
-                                width: bind window.width - 60
+                                width: bind window.width-60
                                 height: 20
                                 fill: bind color;
                                 onMousePressed: function (event) {
@@ -260,7 +350,7 @@ public class NoteWindow {
                                 }
                                 blocksMouse: true
                             },
-                            //Button for showing editable buttons (modify text)
+                            //Button for showing edit buttons (to modify text)
                             ImageView {
                                 image: mainIm;
                                 layoutX: 25
@@ -430,64 +520,22 @@ public class NoteWindow {
 					}
                             },
                             //Button Save
-                            ImageView {
-				    var im = buttonSave;
-				    image: bind im;
-				    layoutX: 3;
-				    layoutY: bind window.height - 23;
-                                    effect: bind ok_ef
-                                    clip: Rectangle { height: 20 width: 20 }
-				    onMouseEntered: function(e){
-					ok_ef.level = .7
-				    }
-				    onMouseExited: function(e){
-					ok_ef.level = .3
-				    }
-				    onMouseClicked: function(e){
-					var c = Controller.getInstance();
-					//if not empty TextArea
-					if(t.getText() != ""){
-					PrepareToSave();
-					note.setText(noteText);
-					note.setTitle(title);
-					}else{
-						note.setText("");
-						note.setTitle("");
-					}
-					//if it is new note
-					if(note.getId() == 0)
-					c.saveNewNote(note)
-					else
-					c.saveNote(note);
-				/*	SavingTask {
-					    n: note
-					    onStart: function () {
-						// add Text { content: "Saving..." }
-					    }
-
-					    onDone: function () {
-						// remove text
-					    }
-
-					}.start()*/
-
-				    }
-                            }
+                            button,
                             //Button for opening media content
                             ImageView {
-				    var im = buttonMedia;
-				    image: bind im;
-				    visible: bind butVis;
-				    layoutX: bind window.width / 2 - 27;
-				    layoutY: bind window.height - 23;
-                                    effect: media_ef
-				    onMouseEntered: function (e) {
-					media_ef.level = .7
-				    }
-				    onMouseExited: function (e) {
-					media_ef.level = .3
-				    }
-				    onMouseClicked: function (e: MouseEvent) {
+                                var im = buttonMedia;
+                                image: bind  im;
+                                visible:   bind butVis  ;
+                                layoutX:   bind window.width                   / 2  -27;
+                                layoutY:   bind window.height - 23;
+                                effect:  media_ef
+                                onMouseEntered: function (e) {
+                                    media_ef.level = .7
+                                }
+                                onMouseExited: function (e) {
+                                    media_ef.level = .3
+                                }
+                                onMouseClicked: function (e: MouseEvent) {
 					//needs upping TextArea
 					panel = 64;
 					//And make media visible
@@ -531,7 +579,7 @@ public class NoteWindow {
                             ImageView {
 				    var im = buttonMedia2;
 				    image: bind im;
-				    visible: bind if (butVis) false else true;
+				    visible: bind (not butVis);
 				    layoutX: bind window.width / 2 - 27;
 				    layoutY: bind window.height - 23;
                                     effect: media_ef

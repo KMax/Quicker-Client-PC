@@ -81,13 +81,20 @@ public class NotesView extends View {
                                 translateX: Constants.VIEWER_WIDTH - 30
                                 spacing: 2
                                 content: [
-                                    ImageView {image: Constants.ADD_BUTTON
-                                        onMouseClicked: function (e: MouseEvent) {
-                                            var w = NoteWindow {
-                                                            note: provider.newNote()
-                                                        }
-                                            w.create();
-                                        }
+                                    Group {
+                                        content: [
+                                            Rectangle { width: 16 height: 16 fill: Color.TRANSPARENT }
+                                            ImageView {
+                                                image: Constants.ADD_BUTTON
+
+                                            }
+                                         ]
+                                         onMouseClicked: function (e: MouseEvent) {
+                                                    var w = NoteWindow {
+                                                        note: provider.newNote()
+                                                    }
+                                                    w.create();
+                                                }
                                     }
                                 ]
                             } into a;
@@ -134,9 +141,19 @@ public class NotesView extends View {
                                                             fill: Color.GREEN
                                                             wrappingWidth: Constants.VIEWER_WIDTH - 10
                                                         }
-                                                        ImageView {
+                                                        // button for removing the note
+                                                        Group {
                                                             id: "{item.getNoteID()}"
-                                                            image: Constants.REMOVE_BUTTON
+                                                            content: [
+                                                                Rectangle {
+                                                                    width: 16
+                                                                    height: 16
+                                                                    fill: Color.TRANSPARENT
+                                                                }
+                                                                ImageView {
+                                                                    image: Constants.REMOVE_BUTTON
+                                                                }
+                                                            ]
                                                             onMouseClicked: function (e: MouseEvent) {
                                                                 delete e.node.parent.parent.parent from a;
                                                                 provider.deleteNote(Integer.parseInt(e.node.id));
