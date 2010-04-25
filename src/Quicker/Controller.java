@@ -217,7 +217,7 @@ public class Controller {
         provider.put("maxim/note/"+noteToSave.getId(), toSend, "application/xml");
     }
 
-    public void deleteNote(int id) {
+    public void deleteNote(int id){
         provider.delete("maxim/note/"+id);
     }
 
